@@ -17,10 +17,10 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Initialize the animation controller with a duration of 2500 milliseconds (2.5 seconds)
+    // Initialize the animation controller with a duration of 5000 milliseconds (5 seconds)
     // and use `this` (the current widget) as the vsync
     controller = AnimationController(
-        duration: const Duration(milliseconds: 2500), vsync: this);
+        duration: const Duration(milliseconds: 3000), vsync: this);
 
     // Define an opacity animation from 1.0 (fully opaque) to 0.0 (fully transparent)
     opacity = Tween<double>(begin: 1.0, end: 0.0).animate(controller)
@@ -47,8 +47,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void navigationPage() {
-    // Navigator.of(context)
-    //     .pushReplacement(MaterialPageRoute(builder: (_) => WelcomeBackPage()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (_) => WelcomeBackPage()));
   }
 
   Widget build(BuildContext context) {
