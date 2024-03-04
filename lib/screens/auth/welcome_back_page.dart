@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:picking_app/app_properties.dart';
 import 'package:picking_app/services/AuthService.dart';
 import 'package:picking_app/services/jwt_service.dart';
-
+import 'package:picking_app/screens/main/picking_main.dart';
 // import 'register_page.dart';
 
 class WelcomeBackPage extends StatefulWidget {
@@ -16,14 +16,14 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
 
   TextEditingController password = TextEditingController();
 
-  Widget company_logos = const Image(
-      width: 120,
-      height: 120,
-      image:
-          AssetImage('assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'));
-
   @override
   Widget build(BuildContext context) {
+    Widget company_logos = const Image(
+        width: 120,
+        height: 120,
+        image: AssetImage(
+            'assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'));
+
     Widget welcomeBack = const Text(
       'Welcome Back',
       style: TextStyle(
@@ -67,7 +67,10 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
 
           final jwtService = jwt_service();
           await jwtService.storeToken(token);
-          // For example, navigate to the next screen or perform any other actions
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PickingMainPage()),
+          );
         } catch (e) {
           // Extract the relevant part of the exception message
           final errorMessage = e.toString().split('Error: Exception: ')[1];
