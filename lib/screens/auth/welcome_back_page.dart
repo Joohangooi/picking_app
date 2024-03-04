@@ -74,7 +74,7 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
             TextField(
               controller: password,
               decoration: const InputDecoration(
-                hintText: 'User Password',
+                hintText: ' Password',
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
               ),
@@ -83,7 +83,10 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
             ),
           ],
         ),
-        loginButton
+        Padding(
+          padding: const EdgeInsets.only(top: 30),
+          child: loginButton,
+        )
       ],
     );
 
@@ -123,25 +126,41 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               color: greenStemBg,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 80, bottom: 20), // Add padding on the top
-                  child: company_logos,
-                ),
-                welcomeBack,
-                subTitle,
-                loginForm,
-                forgotPassword
-              ],
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 80,
+                      bottom: 20,
+                    ),
+                    child: company_logos,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 20,
+                    ),
+                    child: welcomeBack,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20, left: 15),
+                    child: subTitle,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 20, left: 10, right: 30),
+                    child: loginForm,
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
+      bottomNavigationBar: forgotPassword,
     );
   }
 }
