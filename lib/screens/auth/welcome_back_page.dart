@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:picking_app/app_properties.dart';
+import 'package:picking_app/services/AuthService.dart';
+import 'package:picking_app/services/jwt_service.dart';
 
 // import 'register_page.dart';
 
@@ -53,7 +55,42 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
         size: 30,
       ),
       color: Colors.black,
-      onPressed: () {},
+      onPressed: () async {
+        try {
+          // Call the login API using the AuthService
+          final authService = AuthService();
+          final response =
+              await authService.loginUser(email.text, password.text);
+
+          // If authentication is successful, handle the response accordingly
+          final token = response['token'];
+
+          final jwtService = jwt_service();
+          await jwtService.storeToken(token);
+          // For example, navigate to the next screen or perform any other actions
+        } catch (e) {
+          // Extract the relevant part of the exception message
+          final errorMessage = e.toString().split('Error: Exception: ')[1];
+          // Handle the authentication failure
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Authentication Failed!'),
+                content: Text(errorMessage),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
     )));
 
     Widget loginForm = Column(
