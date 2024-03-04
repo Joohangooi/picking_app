@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:picking_app/app_properties.dart';
 import 'package:picking_app/services/AuthService.dart';
 import 'package:picking_app/services/jwt_service.dart';
@@ -15,6 +14,25 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
   TextEditingController email = TextEditingController();
 
   TextEditingController password = TextEditingController();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Check if token exists when the screen initializes
+  //   checkTokenAndNavigate();
+  // }
+
+  // Future<void> checkTokenAndNavigate() async {
+  //   // Check if token exists
+  //   bool hasToken = await jwt_service().hasToken();
+  //   if (hasToken) {
+  //     // If token exists, navigate to the main page
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => PickingMainPage()),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

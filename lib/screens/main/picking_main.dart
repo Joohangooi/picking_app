@@ -9,14 +9,13 @@ class PickingMainPage extends StatefulWidget {
 class _PickingMainPageState extends State<PickingMainPage> {
   @override
   Widget build(BuildContext context) {
+    Widget company_logos = const Image(
+        width: 120,
+        height: 120,
+        image: AssetImage(
+            'assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'));
+
     return Scaffold(
-      appBar: AppBarWidget(title: 'Greenstem'),
-      body: const Center(
-        child: Text(
-          'Greenstem ',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
+        appBar: AppBarWidget(title: 'Greenstem'), body: company_logos);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/screens/main/picking_main.dart';
+import 'package:picking_app/services/jwt_service.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -16,14 +18,18 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
-    // Initialize the animation controller with a duration of 5000 milliseconds (5 seconds)
+    // Initialize the animation controller with a duration of 3000 milliseconds (3 seconds)
     // and use `this` (the current widget) as the vsync
     controller = AnimationController(
-        duration: const Duration(milliseconds: 3000), vsync: this);
+      duration: const Duration(milliseconds: 3000),
+      vsync: this,
+    );
 
     // Define an opacity animation from 1.0 (fully opaque) to 0.0 (fully transparent)
-    opacity = Tween<double>(begin: 1.0, end: 0.0).animate(controller)
+    opacity = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(controller)
 
       // Add a listener to the opacity animation
       ..addListener(() {
@@ -34,9 +40,27 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Start the animation and wait for it to complete
     controller.forward().then((_) {
-      // Once the animation is complete, call the navigationPage() function
-      navigationPage();
+      // Once the animation is complete, check token existence and navigate accordingly
+      checkTokenAndNavigate();
     });
+  }
+
+  Future<void> checkTokenAndNavigate() async {
+    // Check if token exists using middleware
+    bool hasToken = await jwt_service().hasToken();
+    if (hasToken) {
+      // If token exists, navigate to the main page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PickingMainPage()),
+      );
+    } else {
+      // If token doesn't exist, navigate to the welcome page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomeBackPage()),
+      );
+    }
   }
 
   @override
