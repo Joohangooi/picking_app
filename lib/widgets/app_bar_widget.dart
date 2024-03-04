@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/services/jwt_service.dart'; // Import your jwt_service file
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -15,8 +17,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(Icons.logout),
-          onPressed: () {
+          onPressed: () async {
             // Implement logout functionality here
+            await jwt_service().deleteToken();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => WelcomeBackPage()),
+            );
           },
         ),
       ],

@@ -15,25 +15,6 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
 
   TextEditingController password = TextEditingController();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Check if token exists when the screen initializes
-  //   checkTokenAndNavigate();
-  // }
-
-  // Future<void> checkTokenAndNavigate() async {
-  //   // Check if token exists
-  //   bool hasToken = await jwt_service().hasToken();
-  //   if (hasToken) {
-  //     // If token exists, navigate to the main page
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => PickingMainPage()),
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     Widget company_logos = const Image(
