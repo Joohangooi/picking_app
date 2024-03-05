@@ -37,8 +37,10 @@ class _PickingMainPageState extends State<PickingMainPage> {
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               child: CustomCard(
-                subtitle: "Subtitle",
-                pickedNo: "Picked No",
+                date: '2021-10-01',
+                pickedNo: 'NC002167',
+                companyName: 'Greenstem Sdn Bhd',
+                zone: 'Zone A',
               ),
             ),
             Padding(

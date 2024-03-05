@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
-  final String? title;
-  final String? subtitle;
   final String? date;
   final String? pickedNo;
+  final String? companyName;
   final String? zone;
+  final String? stockCode;
+  final String? stockDesc;
+  final String? location;
+  final String? requestQty;
+  final String? varianceQty;
+  final String? binNo;
+  final String? pickedQty;
 
   const CustomCard({
-    this.title,
-    this.subtitle,
     this.date,
     this.pickedNo,
+    this.companyName,
     this.zone,
+    this.stockCode,
+    this.stockDesc,
+    this.location,
+    this.requestQty,
+    this.varianceQty,
+    this.binNo,
+    this.pickedQty,
     Key? key,
   }) : super(key: key);
 
@@ -34,28 +46,30 @@ class CustomCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if (title != null) Text(title!),
-                    if (subtitle != null) Text(subtitle!),
-                    if (subtitle != null) Text(subtitle!),
+                    if (date != null) Text(date!),
+                    if (pickedNo != null) Text(pickedNo!),
+                    if (companyName != null) Text(companyName!),
+                    if (zone != null) Text(zone!),
+                    if (stockCode != null) Text(stockCode!),
+                    if (stockDesc != null) Text(stockDesc!),
+                    if (location != null) Text(location!),
+                    if (requestQty != null) Text(requestQty!),
+                    if (varianceQty != null) Text(varianceQty!),
                   ],
                 ),
               ),
-              const SizedBox(width: 16.0), // Add spacing between columns
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (title != null) Text(title!),
-                    if (subtitle != null) Text(subtitle!),
-                  ],
+              if (location != null && binNo != null && requestQty != null)
+                const SizedBox(width: 16.0),
+              if (location != null && binNo != null && requestQty != null)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (binNo != null) Text(binNo!),
+                      if (pickedQty != null) Text(pickedQty!),
+                    ],
+                  ),
                 ),
-              ),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[],
-                ),
-              ),
             ],
           ),
         ),

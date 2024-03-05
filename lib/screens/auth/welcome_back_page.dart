@@ -167,13 +167,13 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 80,
+                      top: 70,
                       bottom: 20,
                     ),
                     child: company_logos,
