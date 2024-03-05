@@ -34,13 +34,57 @@ class _PickingMainPageState extends State<PickingMainPage> {
                 },
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomCard(
-                date: '2021-10-01',
-                pickedNo: 'NC002167',
-                companyName: 'Greenstem Sdn Bhd',
-                zone: 'Zone A',
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 15,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: CustomCard(
+                  date: '2021-10-01',
+                  pickedNo: 'NC002167',
+                  companyName: 'Greenstem Sdn Bhd',
+                  zone: 'Zone A',
+                  option: 'c',
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 15,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: CustomCard(
+                  date: '2021-10-01',
+                  pickedNo: 'NC002167',
+                  companyName: 'Greenstem Sdn Bhd',
+                  zone: 'Zone A',
+                  option: 'c',
+                ),
               ),
             ),
             Padding(

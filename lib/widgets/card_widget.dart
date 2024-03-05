@@ -12,6 +12,7 @@ class CustomCard extends StatelessWidget {
   final String? varianceQty;
   final String? binNo;
   final String? pickedQty;
+  final String? option;
 
   const CustomCard({
     this.date,
@@ -25,54 +26,114 @@ class CustomCard extends StatelessWidget {
     this.varianceQty,
     this.binNo,
     this.pickedQty,
+    this.option,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor;
+    String optionText;
+
+    switch (option) {
+      case 'c':
+        backgroundColor = Colors.green;
+        optionText = 'Complete';
+        break;
+      case 'p':
+        backgroundColor = Colors.orange;
+        optionText = 'Partial';
+        break;
+      case 'x':
+        backgroundColor = Colors.grey;
+        optionText = 'Incomplete';
+        break;
+      default:
+        backgroundColor = Colors.transparent;
+        optionText = '';
+        break;
+    }
+
     return Card(
-      child: GestureDetector(
-        onTap: () {
-          // Define the action you want to perform when the card is clicked
-          print('Card clicked!'); // For example, print a message
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (date != null) Text(date!),
-                    if (pickedNo != null) Text(pickedNo!),
-                    if (companyName != null) Text(companyName!),
-                    if (zone != null) Text(zone!),
-                    if (stockCode != null) Text(stockCode!),
-                    if (stockDesc != null) Text(stockDesc!),
-                    if (location != null) Text(location!),
-                    if (requestQty != null) Text(requestQty!),
-                    if (varianceQty != null) Text(varianceQty!),
-                  ],
-                ),
-              ),
-              if (location != null && binNo != null && requestQty != null)
-                const SizedBox(width: 16.0),
-              if (location != null && binNo != null && requestQty != null)
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      if (binNo != null) Text(binNo!),
-                      if (pickedQty != null) Text(pickedQty!),
-                    ],
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              // Define the action you want to perform when the card is clicked
+              print('Card clicked!'); // For example, print a message
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        if (date != null) Text(date!),
+                        if (pickedNo != null) Text(pickedNo!),
+                        if (companyName != null) Text(companyName!),
+                        if (zone != null) Text(zone!),
+                        if (stockCode != null) Text(stockCode!),
+                        if (stockDesc != null) Text(stockDesc!),
+                        if (location != null) Text(location!),
+                        if (requestQty != null) Text(requestQty!),
+                        if (varianceQty != null) Text(varianceQty!),
+                      ],
+                    ),
                   ),
-                ),
-            ],
+                  if (location != null && binNo != null && requestQty != null)
+                    const SizedBox(width: 16.0),
+                  if (location != null && binNo != null && requestQty != null)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          if (binNo != null) Text(binNo!),
+                          if (pickedQty != null) Text(pickedQty!),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius:
+                    const BorderRadius.only(bottomLeft: Radius.circular(8.0)),
+              ),
+              child: Text(
+                optionText,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 5,
+            child: location != null && binNo != null && requestQty != null
+                ? IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      print('Edit clicked!');
+                    },
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () {
+                      print('Bin clicked!');
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
