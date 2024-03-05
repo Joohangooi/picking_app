@@ -36,15 +36,15 @@ class CustomCard extends StatelessWidget {
     String optionText;
 
     switch (option) {
-      case 'c':
+      case 'c' || 'C':
         backgroundColor = Colors.green;
         optionText = 'Complete';
         break;
-      case 'p':
+      case 'p' || 'P':
         backgroundColor = Colors.orange;
         optionText = 'Partial';
         break;
-      case 'x':
+      case 'x' || 'X':
         backgroundColor = Colors.grey;
         optionText = 'Incomplete';
         break;
