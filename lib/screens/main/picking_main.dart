@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/screens/auth/welcome_back_page.dart';
-import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/jwt_service.dart';
+import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
-import 'package:picking_app/services/get_main_picking_service.dart'; // Import the service
+import 'package:picking_app/services/main_picking_service.dart';
 
 class PickingMainPage extends StatefulWidget {
   @override
@@ -25,7 +27,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   Future<void> fetchPickingData() async {
     try {
-      final result = await GetMainPickingService().getMainPickingData();
+      final result = await MainPickingService().getMainPickingData();
       setState(() {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
@@ -56,7 +58,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
         }
       });
     } catch (e) {
-      // print('Error fetching picking data: $e');
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -85,11 +86,11 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   Future<void> handlePickingConfirmation(String documentNo) async {
     try {
-      final result =
-          await GetMainPickingService().getPickingMainByDocumentNo(documentNo);
+      final pickingDetail =
+          await PickingService().getPickingDetailByDocumentNo(documentNo);
 
       // Handle the result from the API call
-      if (result is int && result == 401) {
+      if (pickingDetail is int && pickingDetail == 401) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -114,17 +115,27 @@ class _PickingMainPageState extends State<PickingMainPage> {
           },
         );
       } else {
-        print(result);
+        if (pickingDetail is List<dynamic>) {
+          for (var item in pickingDetail) {
+            final pickingModel = PickingModel.fromJson(item);
+            await SqliteDbHelper().insertPicking(pickingModel);
+          }
+        } else {
+          final pickingModel = PickingModel.fromJson(pickingDetail);
+          await SqliteDbHelper().insertPicking(pickingModel);
+        }
       }
     } catch (e) {
       // Handle API call error
       showDialog(
+        // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
+          print(e);
           return AlertDialog(
             title: const Text('Error'),
-            content: Text(
-              'An error occurred while fetching data: $e. Please try again later.',
+            content: const Text(
+              'An error occurred while fetching data. Please try again later.',
             ),
             actions: <Widget>[
               TextButton(

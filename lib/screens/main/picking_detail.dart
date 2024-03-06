@@ -4,7 +4,7 @@ import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
-import 'package:picking_app/services/get_main_picking_service.dart'; // Import the service
+import 'package:picking_app/services/main_picking_service.dart'; // Import the service
 
 class PickingDetailPage extends StatefulWidget {
   final String documentNo;
@@ -27,8 +27,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
 
   Future<void> fetchPickingDetailData() async {
     try {
-      final result = await GetMainPickingService()
-          .getPickingMainByDocumentNo(widget.documentNo);
+      final result = await MainPickingService()
+          .getPickingDetailByDocumentNo(widget.documentNo);
       setState(() {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);

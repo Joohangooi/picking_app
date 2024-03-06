@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:picking_app/services/jwt_service.dart';
 
-class GetMainPickingService {
+class MainPickingService {
   static const String apiUrl = 'https://picking-api.typosquare.com';
   final jwtService = jwt_service();
 
@@ -31,7 +31,7 @@ class GetMainPickingService {
     }
   }
 
-  Future<dynamic> getPickingMainByDocumentNo(String pickingNo) async {
+  Future<dynamic> getPickingDetailByDocumentNo(String documentNo) async {
     try {
       final token = await jwtService.getToken();
       if (token == null) {
@@ -40,7 +40,7 @@ class GetMainPickingService {
 
       final response = await http.get(
         Uri.parse(
-            '$apiUrl/api/Detail/detail/GetPickingDetailByDocumentNo/$pickingNo'),
+            '$apiUrl/api/Detail/detail/GetPickingDetailByDocumentNo/$documentNo'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token', // Include token in headers
