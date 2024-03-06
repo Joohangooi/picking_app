@@ -13,6 +13,7 @@ class CustomCard extends StatelessWidget {
   final String? binNo;
   final String? pickedQty;
   final String? option;
+  final VoidCallback? onTap;
 
   const CustomCard({
     this.date,
@@ -27,6 +28,7 @@ class CustomCard extends StatelessWidget {
     this.binNo,
     this.pickedQty,
     this.option,
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
@@ -35,16 +37,16 @@ class CustomCard extends StatelessWidget {
     Color backgroundColor;
     String optionText;
 
-    switch (option) {
-      case 'c' || 'C':
+    switch (option?.toLowerCase()) {
+      case 'c':
         backgroundColor = Colors.green;
         optionText = 'Complete';
         break;
-      case 'p' || 'P':
+      case 'p':
         backgroundColor = Colors.orange;
         optionText = 'Partial';
         break;
-      case 'x' || 'X':
+      case 'x':
         backgroundColor = Colors.grey;
         optionText = 'Incomplete';
         break;
@@ -54,15 +56,12 @@ class CustomCard extends StatelessWidget {
         break;
     }
 
-    return Card(
-      child: Stack(
-        children: [
-          GestureDetector(
-            onTap: () {
-              // Define the action you want to perform when the card is clicked
-              print('Card clicked!'); // For example, print a message
-            },
-            child: Padding(
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        child: Stack(
+          children: [
+            Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +78,8 @@ class CustomCard extends StatelessWidget {
                           Text(companyName!,
                               style: const TextStyle(fontSize: 15)),
                         if (zone != null)
-                          Text(zone!, style: const TextStyle(fontSize: 15)),
+                          Text('Zone ' + zone!,
+                              style: const TextStyle(fontSize: 15)),
                         if (stockCode != null)
                           Text(stockCode!,
                               style: const TextStyle(fontSize: 15)),
@@ -115,42 +115,42 @@ class CustomCard extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius:
-                    const BorderRadius.only(bottomLeft: Radius.circular(8.0)),
-              ),
-              child: Text(
-                optionText,
-                style: const TextStyle(color: Colors.white),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius:
+                      const BorderRadius.only(bottomLeft: Radius.circular(8.0)),
+                ),
+                child: Text(
+                  optionText,
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 5,
-            child: location != null && binNo != null && requestQty != null
-                ? IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      print('Edit clicked!');
-                    },
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () {
-                      print('Bin clicked!');
-                    },
-                  ),
-          ),
-        ],
+            Positioned(
+              bottom: 0,
+              right: 5,
+              child: location != null && binNo != null && requestQty != null
+                  ? IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        print('Edit clicked!');
+                      },
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () {
+                        print('Bin clicked!');
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

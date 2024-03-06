@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/screens/auth/welcome_back_page.dart';
-import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/get_main_picking_service.dart'; // Import the service
 
-class PickingMainPage extends StatefulWidget {
+class PickingDetailPage extends StatefulWidget {
+  final String documentNo;
+  const PickingDetailPage({required this.documentNo});
+
   @override
-  _PickingMainPageState createState() => _PickingMainPageState();
+  _PickingDetailPageState createState() => _PickingDetailPageState();
 }
 
-class _PickingMainPageState extends State<PickingMainPage> {
+class _PickingDetailPageState extends State<PickingDetailPage> {
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingData = [];
 
@@ -20,12 +22,13 @@ class _PickingMainPageState extends State<PickingMainPage> {
   void initState() {
     super.initState();
     // Call the API when the page loads
-    fetchPickingData();
+    fetchPickingDetailData();
   }
 
-  Future<void> fetchPickingData() async {
+  Future<void> fetchPickingDetailData() async {
     try {
-      final result = await GetMainPickingService().getMainPickingData();
+      final result = await GetMainPickingService()
+          .getPickingMainByDocumentNo(widget.documentNo);
       setState(() {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
@@ -68,10 +71,10 @@ class _PickingMainPageState extends State<PickingMainPage> {
               TextButton(
                 onPressed: () async {
                   await jwt_service().deleteToken();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => WelcomeBackPage()),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => WelcomeBackPage()),
+                  // );
                 },
                 child: const Text('OK'),
               ),
@@ -86,8 +89,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
   @override
   Widget build(BuildContext context) {
     Widget company_logos = const Image(
-      width: 100,
-      height: 100,
+      width: 120,
+      height: 120,
       image:
           AssetImage('assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'),
     );
@@ -139,14 +142,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                         companyName: data['customerName'],
                         zone: data['zone'],
                         option: data['option'],
-                       onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PickingDetailPage(
-                                  documentNo: data['documentNo']),
-                            ),
-                          );
+                        onTap: () {
+                          print('Card tapped: ${data['documentNo']}');
                         },
                       ),
                     ),

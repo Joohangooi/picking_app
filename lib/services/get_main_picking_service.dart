@@ -30,4 +30,30 @@ class GetMainPickingService {
       throw Exception('Error encountered! Error: $e');
     }
   }
+
+  Future<dynamic> getPickingMainByDocumentNo(String pickingNo) async {
+    try {
+      final token = await jwtService.getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      final response = await http.get(
+        Uri.parse(
+            '$apiUrl/api/Detail/detail/GetPickingDetailByDocumentNo/$pickingNo'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token', // Include token in headers
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return response.statusCode;
+      }
+    } catch (e) {
+      throw Exception('Error encountered! Error: $e');
+    }
+  }
 }
