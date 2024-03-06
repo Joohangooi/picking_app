@@ -54,15 +54,25 @@ class SqliteDbHelper {
     final db = await database;
     Map<String, dynamic> data = picking.toJson();
 
-    // Check if the picking model already has an ID
+    // Check if the record with the same documentNo already exists
+    List<Map<String, dynamic>> existingRecords = await db.query(
+      'picking',
+      where: 'documentNo = ?',
+      whereArgs: [picking.pickedNo],
+    );
+
+    if (existingRecords.isNotEmpty) {
+      // Record already exists, do nothing or handle as needed
+      return;
+    }
+
+    // Record does not exist, proceed with insertion
     if (picking.id == null) {
-      // Generate a unique ID
       int id = await _getUniqueID(db);
       data['id'] = id;
       picking.id = id;
     }
 
-    // Insert the picking model into the database
     await db.insert(
       'picking',
       data,

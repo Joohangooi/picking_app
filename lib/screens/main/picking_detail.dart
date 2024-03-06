@@ -7,8 +7,7 @@ import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart'; // Import the service
 
 class PickingDetailPage extends StatefulWidget {
-  final String documentNo;
-  const PickingDetailPage({required this.documentNo});
+  const PickingDetailPage();
 
   @override
   _PickingDetailPageState createState() => _PickingDetailPageState();
@@ -22,69 +21,6 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
   void initState() {
     super.initState();
     // Call the API when the page loads
-    fetchPickingDetailData();
-  }
-
-  Future<void> fetchPickingDetailData() async {
-    try {
-      final result = await MainPickingService()
-          .getPickingDetailByDocumentNo(widget.documentNo);
-      setState(() {
-        if ((result != 401) && (result != null)) {
-          pickingData = List<Map<String, dynamic>>.from(result);
-        } else if (result == 401) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Unauthorized'),
-                content: const Text(
-                    'You are not authorized to access this resource.\nPlease login again.'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () async {
-                      await jwt_service().deleteToken();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WelcomeBackPage()),
-                      );
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      });
-    } catch (e) {
-      // print('Error fetching picking data: $e');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error fetching data!'),
-            content: const Text(
-                'Please contact the system administrator for assistance.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  // await jwt_service().deleteToken();
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => WelcomeBackPage()),
-                  // );
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      // Handle other errors
-    }
   }
 
   @override

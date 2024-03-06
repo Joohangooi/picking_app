@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
@@ -124,6 +125,12 @@ class _PickingMainPageState extends State<PickingMainPage> {
           final pickingModel = PickingModel.fromJson(pickingDetail);
           await SqliteDbHelper().insertPicking(pickingModel);
         }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PickingDetailPage(),
+          ),
+        );
       }
     } catch (e) {
       // Handle API call error
