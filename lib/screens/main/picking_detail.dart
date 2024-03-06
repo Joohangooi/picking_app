@@ -70,7 +70,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () async {
-                  await jwt_service().deleteToken();
+                  Navigator.pop(context);
+                  // await jwt_service().deleteToken();
                   // Navigator.pushReplacement(
                   //   context,
                   //   MaterialPageRoute(builder: (context) => WelcomeBackPage()),

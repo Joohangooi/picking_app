@@ -83,6 +83,63 @@ class _PickingMainPageState extends State<PickingMainPage> {
     }
   }
 
+  Future<void> handlePickingConfirmation(String documentNo) async {
+    try {
+      final result =
+          await GetMainPickingService().getPickingMainByDocumentNo(documentNo);
+
+      // Handle the result from the API call
+      if (result is int && result == 401) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Unauthorized'),
+              content: const Text(
+                  'You are not authorized to access this resource.\nPlease login again.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    await jwt_service().deleteToken();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => WelcomeBackPage()),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print(result);
+      }
+    } catch (e) {
+      // Handle API call error
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(
+              'An error occurred while fetching data: $e. Please try again later.',
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget company_logos = const Image(
@@ -139,13 +196,31 @@ class _PickingMainPageState extends State<PickingMainPage> {
                         companyName: data['customerName'],
                         zone: data['zone'],
                         option: data['option'],
-                       onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PickingDetailPage(
-                                  documentNo: data['documentNo']),
-                            ),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Confirm Picking'),
+                                content: const Text(
+                                    'Do you want to pick this order?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await handlePickingConfirmation(
+                                          data['documentNo']);
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                       ),
