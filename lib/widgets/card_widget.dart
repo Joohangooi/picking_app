@@ -62,7 +62,7 @@ class CustomCard extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 25.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -156,7 +156,7 @@ class CustomCard extends StatelessWidget {
             ),
             Positioned(
               bottom: 0,
-              right: 0,
+              right: 3,
               child: location != null && binNo != null && requestQty != null
                   ? IconButton(
                       icon: const Icon(Icons.edit),

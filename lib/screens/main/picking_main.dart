@@ -18,6 +18,7 @@ class PickingMainPage extends StatefulWidget {
 class _PickingMainPageState extends State<PickingMainPage> {
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingData = [];
+  List<Map<String, dynamic>> filteredPickingData = [];
 
   @override
   void initState() {
@@ -159,6 +160,25 @@ class _PickingMainPageState extends State<PickingMainPage> {
     }
   }
 
+  void filterPickingData(String query) {
+    setState(() {
+      filteredPickingData = pickingData
+          .where((item) =>
+              item['documentNo']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['customerName']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              ('Zone ${item['zone']}'
+                  .toLowerCase()
+                  .contains(query.toLowerCase())))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget company_logos = const Image(
@@ -179,7 +199,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
               child: SearchBarWidget(
                 controller: searchController,
                 onChanged: (value) {
-                  // Handle search query changes
+                  filterPickingData(value);
                 },
               ),
             ),
@@ -187,9 +207,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: pickingData.length,
+              itemCount: filteredPickingData.length,
               itemBuilder: (context, index) {
-                final data = pickingData[index];
+                final data = filteredPickingData[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Container(
