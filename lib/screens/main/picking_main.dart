@@ -11,6 +11,8 @@ import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
 
 class PickingMainPage extends StatefulWidget {
+  const PickingMainPage({super.key});
+
   @override
   _PickingMainPageState createState() => _PickingMainPageState();
 }
@@ -88,6 +90,19 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   Future<void> handlePickingConfirmation(String documentNo) async {
     try {
+      var pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
+
+      if (pickingData.isNotEmpty) {
+        Navigator.of(context).pop(); // Dismiss the dialog box
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PickingDetailPage(pickingData: pickingData),
+          ),
+        );
+        return;
+      }
+
       final pickingDetail =
           await PickingService().getPickingDetailByDocumentNo(documentNo);
 
@@ -117,20 +132,16 @@ class _PickingMainPageState extends State<PickingMainPage> {
           },
         );
       } else {
-        if (pickingDetail is List<dynamic>) {
-          for (var item in pickingDetail) {
-            final pickingModel = PickingModel.fromJson(item);
-            await SqliteDbHelper().insertPicking(pickingModel);
-          }
-        } else {
-          final pickingModel = PickingModel.fromJson(pickingDetail);
-          await SqliteDbHelper().insertPicking(pickingModel);
+        for (var item in pickingDetail) {
+          final pickingModel = PickingModel.fromJson(item);
+          await SqliteDbHelper.insertData(pickingModel);
         }
-        Navigator.of(context).pop(); // Dismiss the dialog box
+        pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
+        Navigator.of(context).pop();
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const PickingDetailPage(),
+            builder: (context) => PickingDetailPage(pickingData: pickingData),
           ),
         );
       }
@@ -140,7 +151,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
         // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
-          print(e);
           return AlertDialog(
             title: const Text('Error'),
             content: const Text(
@@ -163,10 +173,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
   void filterPickingData(String query) {
     setState(() {
       if (query.isEmpty) {
-        // If the search query is empty, show all picking data
         filteredPickingData = List.from(pickingData);
       } else {
-        // Otherwise, filter the picking data based on the query
         filteredPickingData = pickingData
             .where((item) =>
                 item['documentNo']

@@ -52,6 +52,10 @@ class CustomCard extends StatelessWidget {
         backgroundColor = Colors.grey;
         optionText = 'Incomplete';
         break;
+      case 't':
+        backgroundColor = Colors.red;
+        optionText = 'Taken';
+        break;
       default:
         backgroundColor = Colors.transparent;
         optionText = '';

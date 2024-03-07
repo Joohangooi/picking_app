@@ -1,37 +1,39 @@
 class PickingModel {
-  int? id;
-  final String date;
+  final String documentNo;
+  final String documentDate;
   final String pickedNo;
-  final String companyName;
+  final String customerName;
   final String zone;
   final String remarks;
   final String option;
-  final String binShelfNo;
   final String description;
+  final String stock;
   final String location;
+  final String binShelfNo;
   final double quantity;
   final double requestQty;
 
   PickingModel({
-    this.id,
-    required this.date,
+    required this.documentNo,
+    required this.documentDate,
     required this.pickedNo,
-    required this.companyName,
+    required this.customerName,
     required this.zone,
     required this.remarks,
     required this.option,
+    required this.description,
+    required this.stock,
     required this.location,
+    required this.binShelfNo,
     required this.quantity,
     required this.requestQty,
-    required this.binShelfNo,
-    required this.description,
   });
 
   factory PickingModel.fromJson(Map<String, dynamic> json) {
     return PickingModel(
-      date: json['documentDate'] ?? '',
-      pickedNo: json['documentNo'] ?? '',
-      companyName: json['customerName'] ?? '',
+      documentDate: json['documentDate'] ?? '',
+      documentNo: json['documentNo'] ?? '',
+      customerName: json['customerName'] ?? '',
       zone: json['zone'] ?? '',
       remarks: json['remarks'] ?? '',
       location: json['location'] ?? '',
@@ -39,16 +41,37 @@ class PickingModel {
       quantity: (json['quantity'] ?? 0).toDouble(),
       binShelfNo: json['binShelfNo'] ?? '',
       description: json['description'] ?? '',
+      stock: json['stock'] ?? '',
+      pickedNo: json['pickedNo'] ?? '',
       requestQty: (json['requestQty'] ?? 0).toDouble(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'documentNo': pickedNo,
-      'documentDate': date,
-      'customerName': companyName,
+      'documentDate': documentDate,
+      'customerName': customerName,
+      'stock': stock,
+      'pickedNo': pickedNo,
+      'zone': zone,
+      'location': location,
+      'remarks': remarks,
+      'option': option,
+      'quantity': quantity,
+      'binShelfNo': binShelfNo,
+      'description': description,
+      'requestQty': requestQty,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'documentNo': documentNo,
+      'documentDate': documentDate,
+      'customerName': customerName,
+      'stock': stock,
+      'pickedNo': pickedNo,
       'zone': zone,
       'location': location,
       'remarks': remarks,

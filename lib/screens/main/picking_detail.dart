@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
-import 'package:picking_app/screens/auth/welcome_back_page.dart';
-import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
-import 'package:picking_app/services/main_picking_service.dart'; // Import the service
 
 class PickingDetailPage extends StatefulWidget {
-  const PickingDetailPage();
+  const PickingDetailPage({super.key, required this.pickingData});
+
+  final List<PickingModel> pickingData;
 
   @override
   _PickingDetailPageState createState() => _PickingDetailPageState();
@@ -17,21 +17,39 @@ class PickingDetailPage extends StatefulWidget {
 class _PickingDetailPageState extends State<PickingDetailPage> {
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingDetailData = [];
+  List<Map<String, dynamic>> filteredPickingData = [];
 
   @override
   void initState() {
     super.initState();
-    fetchPickingDataFromLocalDb();
+    pickingDetailData =
+        widget.pickingData.map((record) => record.toJson()).toList();
+    filteredPickingData = List.from(pickingDetailData);
   }
 
-  Future<void> fetchPickingDataFromLocalDb() async {
-    final dbHelper = SqliteDbHelper();
-    final pickingRecords = await dbHelper.getPickingRecords();
-
+  void filterPickingData(String query) {
     setState(() {
-      pickingDetailData =
-          pickingRecords.map((record) => record.toJson()).toList();
-      print(pickingDetailData);
+      if (query.isEmpty) {
+        print("Empty query here");
+        filteredPickingData = List.from(pickingDetailData);
+      } else {
+        filteredPickingData = pickingDetailData
+            .where((item) =>
+                item['documentNo']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['customerName']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ('Zone ${item['zone']}'
+                    .toLowerCase()
+                    .contains(query.toLowerCase())) ||
+                item['location'].toLowerCase().contains(query.toLowerCase()) ||
+                item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
     });
   }
 
@@ -61,7 +79,7 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
               child: SearchBarWidget(
                 controller: searchController,
                 onChanged: (value) {
-                  // Handle search query changes
+                  filterPickingData(value);
                 },
               ),
             ),
@@ -69,9 +87,9 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: pickingDetailData.length,
+              itemCount: filteredPickingData.length,
               itemBuilder: (context, index) {
-                final data = pickingDetailData[index];
+                final data = filteredPickingData[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Container(
@@ -107,7 +125,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                         actionButton: IconButton(
                           icon: const Icon(Icons.delete_outline),
                           onPressed: () {
-                            print('Bin clicked!');
+                            final dbHelper = SqliteDbHelper();
+                            dbHelper.deleteAllPickingRecords();
                           },
                         ),
                         onTap: () {
