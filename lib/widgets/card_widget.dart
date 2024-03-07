@@ -63,55 +63,77 @@ class CustomCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        if (date != null)
-                          Text(date!, style: const TextStyle(fontSize: 15)),
-                        if (pickedNo != null)
-                          Text(pickedNo!, style: const TextStyle(fontSize: 15)),
-                        if (companyName != null)
-                          Text(companyName!,
-                              style: const TextStyle(fontSize: 15)),
-                        if (zone != null)
-                          Text('Zone ' + zone!,
-                              style: const TextStyle(fontSize: 15)),
-                        if (stockCode != null)
-                          Text(stockCode!,
-                              style: const TextStyle(fontSize: 15)),
-                        if (stockDesc != null)
-                          Text(stockDesc!,
-                              style: const TextStyle(fontSize: 15)),
-                        if (location != null)
-                          Text(location!, style: const TextStyle(fontSize: 15)),
-                        if (requestQty != null)
-                          Text(requestQty!,
-                              style: const TextStyle(fontSize: 15)),
-                        if (varianceQty != null)
-                          Text(varianceQty!,
-                              style: const TextStyle(fontSize: 15)),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (pickedNo != null)
+                        Text(pickedNo!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                            )),
+                      if (companyName != null)
+                        Text(companyName!,
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                  if (location != null && binNo != null && requestQty != null)
-                    const SizedBox(width: 16.0),
-                  if (location != null && binNo != null && requestQty != null)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (binNo != null)
-                            Text(binNo!, style: const TextStyle(fontSize: 15)),
-                          if (pickedQty != null)
-                            Text(pickedQty!,
-                                style: const TextStyle(fontSize: 15)),
-                        ],
+                  const Divider(),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            if (date != null)
+                              Text(date!, style: const TextStyle(fontSize: 15)),
+                            if (zone != null)
+                              Text('Zone ${zone!}',
+                                  style: const TextStyle(fontSize: 15)),
+                            if (stockCode != null)
+                              Text('Stock Code:${stockCode!}',
+                                  style: const TextStyle(fontSize: 15)),
+                            if (stockDesc != null)
+                              Text(stockDesc!,
+                                  style: const TextStyle(fontSize: 15)),
+                            if (location != null)
+                              Text('Location: ${location!}',
+                                  style: const TextStyle(fontSize: 15)),
+                          ],
+                        ),
                       ),
-                    ),
+                      if (location != null &&
+                          binNo != null &&
+                          requestQty != null)
+                        const SizedBox(width: 16.0),
+                      if (location != null &&
+                          binNo != null &&
+                          requestQty != null)
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              if (binNo != null)
+                                Text('Bin: ${binNo!}',
+                                    style: const TextStyle(fontSize: 15)),
+                              if (pickedQty != null)
+                                if (requestQty != null)
+                                  Text('Request Qty: ${requestQty!}',
+                                      style: const TextStyle(fontSize: 15)),
+                              if (varianceQty != null)
+                                Text('Variance Qty: ${varianceQty!}',
+                                    style: const TextStyle(fontSize: 15)),
+                              Text('Picked Qty: ${pickedQty!}',
+                                  style: const TextStyle(fontSize: 15)),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -134,7 +156,7 @@ class CustomCard extends StatelessWidget {
             ),
             Positioned(
               bottom: 0,
-              right: 5,
+              right: 0,
               child: location != null && binNo != null && requestQty != null
                   ? IconButton(
                       icon: const Icon(Icons.edit),

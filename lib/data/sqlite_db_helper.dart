@@ -100,6 +100,7 @@ class SqliteDbHelper {
         pickedNo: maps[i]['documentNo'],
         companyName: maps[i]['customerName'],
         zone: maps[i]['zone'],
+        location: maps[i]['location'],
         remarks: maps[i]['remarks'],
         option: maps[i]['option'],
         binShelfNo: maps[i]['binShelfNo'],

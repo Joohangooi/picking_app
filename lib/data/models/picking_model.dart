@@ -8,6 +8,7 @@ class PickingModel {
   final String option;
   final String binShelfNo;
   final String description;
+  final String location;
   final double quantity;
   final double requestQty;
 
@@ -19,6 +20,7 @@ class PickingModel {
     required this.zone,
     required this.remarks,
     required this.option,
+    required this.location,
     required this.quantity,
     required this.requestQty,
     required this.binShelfNo,
@@ -32,6 +34,7 @@ class PickingModel {
       companyName: json['customerName'] ?? '',
       zone: json['zone'] ?? '',
       remarks: json['remarks'] ?? '',
+      location: json['location'] ?? '',
       option: json['option'] ?? '',
       quantity: (json['quantity'] ?? 0).toDouble(),
       binShelfNo: json['binShelfNo'] ?? '',
@@ -47,6 +50,7 @@ class PickingModel {
       'documentDate': date,
       'customerName': companyName,
       'zone': zone,
+      'location': location,
       'remarks': remarks,
       'option': option,
       'quantity': quantity,

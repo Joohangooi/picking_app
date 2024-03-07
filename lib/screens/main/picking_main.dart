@@ -125,6 +125,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
           final pickingModel = PickingModel.fromJson(pickingDetail);
           await SqliteDbHelper().insertPicking(pickingModel);
         }
+        Navigator.of(context).pop(); // Dismiss the dialog box
         Navigator.push(
           context,
           MaterialPageRoute(
