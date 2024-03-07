@@ -14,6 +14,7 @@ class CustomCard extends StatelessWidget {
   final String? pickedQty;
   final String? option;
   final VoidCallback? onTap;
+  final IconButton? actionButton;
 
   const CustomCard({
     this.date,
@@ -29,6 +30,7 @@ class CustomCard extends StatelessWidget {
     this.pickedQty,
     this.option,
     this.onTap,
+    this.actionButton,
     Key? key,
   }) : super(key: key);
 
@@ -62,7 +64,7 @@ class CustomCard extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 25.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 20.0, 25.0, 28.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -91,15 +93,19 @@ class CustomCard extends StatelessWidget {
                           children: <Widget>[
                             if (date != null)
                               Text(date!, style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
                             if (zone != null)
                               Text('Zone ${zone!}',
                                   style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
                             if (stockCode != null)
                               Text('Stock Code:${stockCode!}',
                                   style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
                             if (stockDesc != null)
                               Text(stockDesc!,
                                   style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
                             if (location != null)
                               Text('Location: ${location!}',
                                   style: const TextStyle(fontSize: 15)),
@@ -157,19 +163,7 @@ class CustomCard extends StatelessWidget {
             Positioned(
               bottom: 0,
               right: 3,
-              child: location != null && binNo != null && requestQty != null
-                  ? IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        print('Edit clicked!');
-                      },
-                    )
-                  : IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () {
-                        print('Bin clicked!');
-                      },
-                    ),
+              child: actionButton ?? Container(),
             ),
           ],
         ),

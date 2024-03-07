@@ -253,7 +253,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
                         pickedNo: data['documentNo'],
                         companyName: data['customerName'],
                         zone: data['zone'],
-                        option: data['option'],
                         onTap: () {
                           showDialog(
                             context: context,

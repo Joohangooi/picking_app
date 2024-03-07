@@ -104,6 +104,12 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                         binNo: data['binShelfNo'],
                         // remarks: data['remarks'],
                         option: data['option'],
+                        actionButton: IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          onPressed: () {
+                            print('Bin clicked!');
+                          },
+                        ),
                         onTap: () {
                           print('Card tapped: ${data['documentNo']}');
                         },
