@@ -45,7 +45,13 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
     );
 
     return Scaffold(
-      appBar: AppBarWidget(title: 'Greenstem'),
+      appBar: AppBarWidget(
+        title: 'Pick List',
+        actionButton: IconButton(
+          icon: const Icon(Icons.sync),
+          onPressed: () async {},
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(

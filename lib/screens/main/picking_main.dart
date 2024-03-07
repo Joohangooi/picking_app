@@ -189,7 +189,20 @@ class _PickingMainPageState extends State<PickingMainPage> {
     );
 
     return Scaffold(
-      appBar: AppBarWidget(title: 'Greenstem'),
+      appBar: AppBarWidget(
+        title: 'Greenstem',
+        actionButton: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            // Implement logout functionality here
+            await jwt_service().deleteToken();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => WelcomeBackPage()),
+            );
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(
