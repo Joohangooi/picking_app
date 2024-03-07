@@ -42,8 +42,8 @@ class PickingModel {
       binShelfNo: json['binShelfNo'] ?? '',
       description: json['description'] ?? '',
       stock: json['stock'] ?? '',
-      pickedNo: json['pickedNo'] ?? '',
       requestQty: (json['requestQty'] ?? 0).toDouble(),
+      pickedNo: json['pickedNo'] ?? '',
     );
   }
 

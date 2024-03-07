@@ -85,6 +85,12 @@ class CustomCard extends StatelessWidget {
                         Text(companyName!,
                             style: const TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold)),
+                      if (stockCode != null)
+                        Text('Stock Code:${stockCode!}',
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold)),
+                      if (stockDesc != null)
+                        Text(stockDesc!, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   const Divider(),
@@ -102,16 +108,12 @@ class CustomCard extends StatelessWidget {
                               Text('Zone ${zone!}',
                                   style: const TextStyle(fontSize: 15)),
                             const SizedBox(height: 3),
-                            if (stockCode != null)
-                              Text('Stock Code:${stockCode!}',
-                                  style: const TextStyle(fontSize: 15)),
-                            const SizedBox(height: 3),
-                            if (stockDesc != null)
-                              Text(stockDesc!,
-                                  style: const TextStyle(fontSize: 15)),
-                            const SizedBox(height: 3),
                             if (location != null)
                               Text('Location: ${location!}',
+                                  style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
+                            if (binNo != null)
+                              Text('Bin: ${binNo!}',
                                   style: const TextStyle(fontSize: 15)),
                           ],
                         ),
@@ -127,18 +129,24 @@ class CustomCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              if (binNo != null)
-                                Text('Bin: ${binNo!}',
-                                    style: const TextStyle(fontSize: 15)),
                               if (pickedQty != null)
                                 if (requestQty != null)
                                   Text('Request Qty: ${requestQty!}',
                                       style: const TextStyle(fontSize: 15)),
+                              const SizedBox(height: 3),
                               if (varianceQty != null)
                                 Text('Variance Qty: ${varianceQty!}',
                                     style: const TextStyle(fontSize: 15)),
-                              Text('Picked Qty: ${pickedQty!}',
-                                  style: const TextStyle(fontSize: 15)),
+                              const SizedBox(height: 3),
+                              Text(
+                                'Picked Qty: ${pickedQty!}',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: (requestQty != varianceQty)
+                                      ? Colors.red
+                                      : null,
+                                ),
+                              ),
                             ],
                           ),
                         ),

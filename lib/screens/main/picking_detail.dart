@@ -64,7 +64,9 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Pick List',
+        title: widget.pickingData.isNotEmpty
+            ? widget.pickingData.first.customerName
+            : 'Picking List',
         actionButton: IconButton(
           icon: const Icon(Icons.sync),
           onPressed: () async {},
@@ -111,9 +113,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: CustomCard(
                         pickedNo: data['documentNo'],
-                        // stockCode: data['stock'],
-                        // stockDesc: data['description'],
-                        companyName: data['customerName'],
+                        stockCode: data['stock'],
+                        stockDesc: data['description'],
                         location: data['location'],
                         zone: data['zone'],
                         requestQty: data['requestQty'].toString(),
