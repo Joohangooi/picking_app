@@ -23,7 +23,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
   @override
   void initState() {
     super.initState();
-    // Call the API when the page loads
     fetchPickingData();
   }
 
@@ -33,6 +32,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
       setState(() {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
+          filteredPickingData = List.from(pickingData);
         } else if (result == 401) {
           showDialog(
             context: context,
@@ -162,20 +162,26 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   void filterPickingData(String query) {
     setState(() {
-      filteredPickingData = pickingData
-          .where((item) =>
-              item['documentNo']
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              item['customerName']
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              ('Zone ${item['zone']}'
-                  .toLowerCase()
-                  .contains(query.toLowerCase())))
-          .toList();
+      if (query.isEmpty) {
+        // If the search query is empty, show all picking data
+        filteredPickingData = List.from(pickingData);
+      } else {
+        // Otherwise, filter the picking data based on the query
+        filteredPickingData = pickingData
+            .where((item) =>
+                item['documentNo']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['customerName']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ('Zone ${item['zone']}'
+                    .toLowerCase()
+                    .contains(query.toLowerCase())))
+            .toList();
+      }
     });
   }
 
