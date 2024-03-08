@@ -129,24 +129,23 @@ class CustomCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              if (pickedQty != null)
-                                if (requestQty != null)
-                                  Text('Request Qty: ${requestQty!}',
-                                      style: const TextStyle(fontSize: 15)),
-                              const SizedBox(height: 3),
-                              if (varianceQty != null)
-                                Text('Variance Qty: ${varianceQty!}',
-                                    style: const TextStyle(fontSize: 15)),
+                              Text('Request Qty: ${requestQty!}',
+                                  style: const TextStyle(fontSize: 15)),
                               const SizedBox(height: 3),
                               Text(
                                 'Picked Qty: ${pickedQty!}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
-                                  color: (requestQty != varianceQty)
-                                      ? Colors.red
-                                      : null,
                                 ),
                               ),
+                              const SizedBox(height: 3),
+                              Text('Variance Qty: ${varianceQty!}',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: (requestQty != varianceQty)
+                                        ? Colors.red
+                                        : Colors.green[700],
+                                  )),
                             ],
                           ),
                         ),
