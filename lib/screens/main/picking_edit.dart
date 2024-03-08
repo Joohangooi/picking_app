@@ -189,50 +189,74 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
       ),
     );
 
-    Widget quantityInfo = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 24.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Requested Quantity:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
+    Widget inputField = TextField(
+      controller: _pickedQtyController,
+      keyboardType: TextInputType.number,
+      onChanged: (value) {
+        // Parse the input value to an integer
+        int? newValue = int.tryParse(value);
+        // Check if the parsed value is greater than the allowed quantity
+        if (newValue != null && newValue > pickingModel.requestQty) {
+          // Show an error message
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('New Value Exceeded Error'),
+                content:
+                    Text('Quantity cannot exceed ${pickingModel.requestQty}.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          // Reset the input field to the maximum allowed quantity
+          _pickedQtyController.text = pickingModel.requestQty.toString();
+          // Move the cursor to the end of the text
+          _pickedQtyController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _pickedQtyController.text.length),
+          );
+        }
+      },
+      decoration: const InputDecoration(
+        labelText: 'Update Picked Quantity',
+        border: OutlineInputBorder(),
+      ),
+    );
+
+    Widget save_button = Align(
+      alignment: Alignment.centerRight,
+      child: ElevatedButton(
+        onPressed: () {
+          // Implement the logic to update the picked quantity
+          // and save the changes
+          // final updatedPickingData = PickingModel(
+          //   documentNo: widget.pickingData.documentNo,
+          //   stock: widget.pickingData.stock,
+          //   description: widget.pickingData.description,
+          //   requestQty: widget.pickingData.requestQty,
+          //   quantity: int.parse(_pickedQtyController.text),
+          //   // Update other properties as needed
+          // );
+
+          // Here, you can call a function to update the data in the database
+          // or perform any other necessary operations
+
+          // Show a success message or navigate back to the previous screen
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Picked quantity updated successfully'),
             ),
-            Text(
-              pickingModel.requestQty.toString(),
-              style: const TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Picked Quantity:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
-            ),
-            Text(
-              pickingModel.quantity.toString(),
-              style: const TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ],
+          );
+        },
+        child: const Text('Save'),
+      ),
     );
 
     return Scaffold(
@@ -241,80 +265,16 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+            child: Column(
           children: [
             pickingInfo,
             const SizedBox(height: 16.0),
-            TextField(
-              controller: _pickedQtyController,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                // Parse the input value to an integer
-                int? newValue = int.tryParse(value);
-                // Check if the parsed value is greater than the allowed quantity
-                if (newValue != null && newValue > pickingModel.requestQty) {
-                  // Show an error message
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('New Value Exceeded Error'),
-                        content: Text(
-                            'Quantity cannot exceed ${pickingModel.requestQty}.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  // Reset the input field to the maximum allowed quantity
-                  _pickedQtyController.text =
-                      pickingModel.requestQty.toString();
-                  // Move the cursor to the end of the text
-                  _pickedQtyController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: _pickedQtyController.text.length),
-                  );
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Update Picked Quantity',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                // Implement the logic to update the picked quantity
-                // and save the changes
-                // final updatedPickingData = PickingModel(
-                //   documentNo: widget.pickingData.documentNo,
-                //   stock: widget.pickingData.stock,
-                //   description: widget.pickingData.description,
-                //   requestQty: widget.pickingData.requestQty,
-                //   quantity: int.parse(_pickedQtyController.text),
-                //   // Update other properties as needed
-                // );
-
-                // Here, you can call a function to update the data in the database
-                // or perform any other necessary operations
-
-                // Show a success message or navigate back to the previous screen
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Picked quantity updated successfully'),
-                  ),
-                );
-              },
-              child: const Text('Save'),
-            ),
+            inputField,
+            const SizedBox(height: 16.0),
+            save_button,
           ],
-        ),
+        )),
       ),
     );
   }
