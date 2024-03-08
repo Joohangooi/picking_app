@@ -118,4 +118,14 @@ class SqliteDbHelper {
     final db = await database;
     await db.delete('picking_detail_table');
   }
+
+  static Future<List<Map<String, dynamic>>> getLatestData(
+      String documentNo) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+        'picking_detail_table',
+        where: 'documentNo = ?',
+        whereArgs: [documentNo]);
+    return maps;
+  }
 }

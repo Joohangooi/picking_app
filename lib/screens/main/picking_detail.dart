@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_model.dart';
+import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
@@ -24,6 +25,15 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
     pickingDetailData =
         widget.pickingData.map((record) => record.toJson()).toList();
     filteredPickingData = List.from(pickingDetailData);
+  }
+
+  void fetchLatestData() async {
+    List<Map<String, dynamic>> latestData =
+        await SqliteDbHelper.getLatestData(widget.pickingData.first.documentNo);
+    setState(() {
+      pickingDetailData = latestData;
+      filteredPickingData = List.from(pickingDetailData);
+    });
   }
 
   void filterPickingData(String query) {
@@ -128,8 +138,10 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    PickingDetailEdit(pickingData: data),
+                                builder: (context) => PickingDetailEdit(
+                                  pickingData: data,
+                                  onSuccess: fetchLatestData,
+                                ),
                               ),
                             );
                           },

@@ -6,8 +6,10 @@ import 'package:picking_app/widgets/app_bar_widget.dart';
 
 class PickingDetailEdit extends StatefulWidget {
   final Map<String, dynamic> pickingData;
+  final VoidCallback onSuccess;
 
-  const PickingDetailEdit({super.key, required this.pickingData});
+  const PickingDetailEdit(
+      {super.key, required this.pickingData, required this.onSuccess});
 
   @override
   _PickingDetailEditState createState() => _PickingDetailEditState();
@@ -32,8 +34,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
 
     Widget pickingInfo = Card(
       elevation: 5,
-      shadowColor: Colors.grey.withOpacity(0.5), // Shadow color
-
+      shadowColor: Colors.grey.withOpacity(0.5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -247,6 +248,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                   content: Text('Picked quantity updated successfully'),
                 ),
               );
+              widget.onSuccess();
               Navigator.pop(context);
             }
           } catch (e) {
