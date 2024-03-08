@@ -277,7 +277,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: CustomCard(
-                              showCheckbox: false,
                               date: data['documentDate'],
                               pickedNo: data['documentNo'],
                               companyName: data['customerName'],

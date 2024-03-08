@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomCard extends StatefulWidget {
+class CustomCard extends StatelessWidget {
   final String? date;
   final String? pickedNo;
   final String? companyName;
@@ -15,7 +15,6 @@ class CustomCard extends StatefulWidget {
   final String? option;
   final VoidCallback? onTap;
   final IconButton? actionButton;
-  final bool showCheckbox;
 
   const CustomCard({
     this.date,
@@ -32,23 +31,15 @@ class CustomCard extends StatefulWidget {
     this.option,
     this.onTap,
     this.actionButton,
-    required this.showCheckbox,
     Key? key,
   }) : super(key: key);
-
-  @override
-  _CustomCardState createState() => _CustomCardState();
-}
-
-class _CustomCardState extends State<CustomCard> {
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     Color backgroundColor;
     String optionText;
 
-    switch (widget.option?.toLowerCase()) {
+    switch (option?.toLowerCase()) {
       case 'c':
         backgroundColor = Colors.green;
         optionText = 'Complete';
@@ -72,7 +63,7 @@ class _CustomCardState extends State<CustomCard> {
     }
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Card(
         child: Stack(
           children: [
@@ -81,48 +72,25 @@ class _CustomCardState extends State<CustomCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.showCheckbox)
-                        SizedBox(
-                          width: 15.0, // Adjust the width as needed
-                          child: Checkbox(
-                            value: isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                isChecked = !isChecked;
-                              });
-                            },
-                          ),
-                        ),
-                      const SizedBox(width: 18.0),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (widget.pickedNo != null)
-                              Text(widget.pickedNo!,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    decoration: TextDecoration.underline,
-                                  )),
-                            if (widget.companyName != null)
-                              Text(widget.companyName!,
-                                  style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold)),
-                            if (widget.stockCode != null)
-                              Text('Stock Code:${widget.stockCode!}',
-                                  style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold)),
-                            if (widget.stockDesc != null)
-                              Text(widget.stockDesc!,
-                                  style: const TextStyle(fontSize: 16)),
-                          ],
-                        ),
-                      ),
+                      if (pickedNo != null)
+                        Text(pickedNo!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                            )),
+                      if (companyName != null)
+                        Text(companyName!,
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold)),
+                      if (stockCode != null)
+                        Text('Stock Code:${stockCode!}',
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold)),
+                      if (stockDesc != null)
+                        Text(stockDesc!, style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   const Divider(),
@@ -133,49 +101,48 @@ class _CustomCardState extends State<CustomCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (widget.date != null)
-                              Text(widget.date!,
+                            if (date != null)
+                              Text(date!, style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
+                            if (zone != null)
+                              Text('Zone ${zone!}',
                                   style: const TextStyle(fontSize: 15)),
                             const SizedBox(height: 3),
-                            if (widget.zone != null)
-                              Text('Zone ${widget.zone!}',
+                            if (location != null)
+                              Text('Location: ${location!}',
                                   style: const TextStyle(fontSize: 15)),
                             const SizedBox(height: 3),
-                            if (widget.location != null)
-                              Text('Location: ${widget.location!}',
-                                  style: const TextStyle(fontSize: 15)),
-                            const SizedBox(height: 3),
-                            if (widget.binNo != null)
-                              Text('Bin: ${widget.binNo!}',
+                            if (binNo != null)
+                              Text('Bin: ${binNo!}',
                                   style: const TextStyle(fontSize: 15)),
                           ],
                         ),
                       ),
-                      if (widget.location != null &&
-                          widget.binNo != null &&
-                          widget.requestQty != null)
+                      if (location != null &&
+                          binNo != null &&
+                          requestQty != null)
                         const SizedBox(width: 16.0),
-                      if (widget.location != null &&
-                          widget.binNo != null &&
-                          widget.requestQty != null)
+                      if (location != null &&
+                          binNo != null &&
+                          requestQty != null)
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Request Qty: ${widget.requestQty!}',
+                              Text('Request Qty: ${requestQty!}',
                                   style: const TextStyle(fontSize: 15)),
                               const SizedBox(height: 3),
                               Text(
-                                'Picked Qty: ${widget.pickedQty!}',
+                                'Picked Qty: ${pickedQty!}',
                                 style: const TextStyle(
                                   fontSize: 15,
                                 ),
                               ),
                               const SizedBox(height: 3),
-                              Text('Variance Qty: ${widget.varianceQty!}',
+                              Text('Variance Qty: ${varianceQty!}',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: (widget.varianceQty != "0.0")
+                                    color: (varianceQty != "0.0")
                                         ? Colors.red
                                         : Colors.green[700],
                                   )),
@@ -207,7 +174,7 @@ class _CustomCardState extends State<CustomCard> {
             Positioned(
               bottom: 0,
               right: 3,
-              child: widget.actionButton ?? Container(),
+              child: actionButton ?? Container(),
             ),
           ],
         ),
