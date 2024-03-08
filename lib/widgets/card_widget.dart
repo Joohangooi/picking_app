@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomCard extends StatelessWidget {
+class CustomCard extends StatefulWidget {
   final String? date;
   final String? pickedNo;
   final String? companyName;
@@ -15,6 +15,7 @@ class CustomCard extends StatelessWidget {
   final String? option;
   final VoidCallback? onTap;
   final IconButton? actionButton;
+  final bool showCheckbox;
 
   const CustomCard({
     this.date,
@@ -31,15 +32,23 @@ class CustomCard extends StatelessWidget {
     this.option,
     this.onTap,
     this.actionButton,
+    required this.showCheckbox,
     Key? key,
   }) : super(key: key);
+
+  @override
+  _CustomCardState createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     Color backgroundColor;
     String optionText;
 
-    switch (option?.toLowerCase()) {
+    switch (widget.option?.toLowerCase()) {
       case 'c':
         backgroundColor = Colors.green;
         optionText = 'Complete';
@@ -63,7 +72,7 @@ class CustomCard extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Card(
         child: Stack(
           children: [
@@ -72,25 +81,48 @@ class CustomCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Column(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (pickedNo != null)
-                        Text(pickedNo!,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              decoration: TextDecoration.underline,
-                            )),
-                      if (companyName != null)
-                        Text(companyName!,
-                            style: const TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold)),
-                      if (stockCode != null)
-                        Text('Stock Code:${stockCode!}',
-                            style: const TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold)),
-                      if (stockDesc != null)
-                        Text(stockDesc!, style: const TextStyle(fontSize: 16)),
+                      if (widget.showCheckbox)
+                        SizedBox(
+                          width: 15.0, // Adjust the width as needed
+                          child: Checkbox(
+                            value: isChecked,
+                            onChanged: (value) {
+                              setState(() {
+                                isChecked = !isChecked;
+                              });
+                            },
+                          ),
+                        ),
+                      const SizedBox(width: 18.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (widget.pickedNo != null)
+                              Text(widget.pickedNo!,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    decoration: TextDecoration.underline,
+                                  )),
+                            if (widget.companyName != null)
+                              Text(widget.companyName!,
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold)),
+                            if (widget.stockCode != null)
+                              Text('Stock Code:${widget.stockCode!}',
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold)),
+                            if (widget.stockDesc != null)
+                              Text(widget.stockDesc!,
+                                  style: const TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                   const Divider(),
@@ -101,48 +133,49 @@ class CustomCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (date != null)
-                              Text(date!, style: const TextStyle(fontSize: 15)),
-                            const SizedBox(height: 3),
-                            if (zone != null)
-                              Text('Zone ${zone!}',
+                            if (widget.date != null)
+                              Text(widget.date!,
                                   style: const TextStyle(fontSize: 15)),
                             const SizedBox(height: 3),
-                            if (location != null)
-                              Text('Location: ${location!}',
+                            if (widget.zone != null)
+                              Text('Zone ${widget.zone!}',
                                   style: const TextStyle(fontSize: 15)),
                             const SizedBox(height: 3),
-                            if (binNo != null)
-                              Text('Bin: ${binNo!}',
+                            if (widget.location != null)
+                              Text('Location: ${widget.location!}',
+                                  style: const TextStyle(fontSize: 15)),
+                            const SizedBox(height: 3),
+                            if (widget.binNo != null)
+                              Text('Bin: ${widget.binNo!}',
                                   style: const TextStyle(fontSize: 15)),
                           ],
                         ),
                       ),
-                      if (location != null &&
-                          binNo != null &&
-                          requestQty != null)
+                      if (widget.location != null &&
+                          widget.binNo != null &&
+                          widget.requestQty != null)
                         const SizedBox(width: 16.0),
-                      if (location != null &&
-                          binNo != null &&
-                          requestQty != null)
+                      if (widget.location != null &&
+                          widget.binNo != null &&
+                          widget.requestQty != null)
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Request Qty: ${requestQty!}',
+                              Text('Request Qty: ${widget.requestQty!}',
                                   style: const TextStyle(fontSize: 15)),
                               const SizedBox(height: 3),
                               Text(
-                                'Picked Qty: ${pickedQty!}',
+                                'Picked Qty: ${widget.pickedQty!}',
                                 style: const TextStyle(
                                   fontSize: 15,
                                 ),
                               ),
                               const SizedBox(height: 3),
-                              Text('Variance Qty: ${varianceQty!}',
+                              Text('Variance Qty: ${widget.varianceQty!}',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: (varianceQty != "0.0")
+                                    color: (widget.varianceQty != "0.0")
                                         ? Colors.red
                                         : Colors.green[700],
                                   )),
@@ -174,7 +207,7 @@ class CustomCard extends StatelessWidget {
             Positioned(
               bottom: 0,
               right: 3,
-              child: actionButton ?? Container(),
+              child: widget.actionButton ?? Container(),
             ),
           ],
         ),
