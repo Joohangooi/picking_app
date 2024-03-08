@@ -6,9 +6,8 @@ import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 
 class PickingDetailPage extends StatefulWidget {
-  const PickingDetailPage({super.key, required this.pickingData});
-
   final List<PickingModel> pickingData;
+  const PickingDetailPage({super.key, required this.pickingData});
 
   @override
   _PickingDetailPageState createState() => _PickingDetailPageState();
