@@ -280,6 +280,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                               date: data['documentDate'],
                               pickedNo: data['documentNo'],
                               companyName: data['customerName'],
+                              option: data['option'],
                               zone: data['zone'],
                               actionButton: IconButton(
                                 icon: const Icon(Icons.delete_outline),

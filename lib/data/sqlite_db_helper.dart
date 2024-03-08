@@ -45,13 +45,18 @@ class SqliteDbHelper {
     await db.insert('picking_detail_table', data.toMap());
   }
 
-  static Future<bool> updateQuantity(
-      String documentNo, int line, double newQuantity) async {
+
+  static Future<bool> updateDetail(
+      String documentNo, int line, double newQuantity, double variance) async {
     try {
       final db = await database;
+      final Map<String, dynamic> values = {
+        'quantity': newQuantity,
+        'option': variance == 0.0 ? 'c' : 'p',
+      };
       int rowsUpdated = await db.update(
         'picking_detail_table',
-        {'quantity': newQuantity},
+        values,
         where: 'documentNo = ? AND line = ?',
         whereArgs: [documentNo, line],
       );

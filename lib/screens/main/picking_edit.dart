@@ -241,11 +241,12 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             setState(() {
               isLoading = true;
             });
-            Future<bool> success = SqliteDbHelper.updateQuantity(
-              widget.pickingData['documentNo'],
-              widget.pickingData['line'],
-              newQuantity,
-            );
+            double variance = pickingModel.requestQty - newQuantity;
+            Future<bool> success = SqliteDbHelper.updateDetail(
+                widget.pickingData['documentNo'],
+                widget.pickingData['line'],
+                newQuantity,
+                variance);
             if (await success) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
