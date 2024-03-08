@@ -20,6 +20,7 @@ class SqliteDbHelper {
         await db.execute('''
           CREATE TABLE picking_detail_table (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            line INTEGER,
             documentNo TEXT,
             documentDate TEXT,
             pickedNo TEXT,
@@ -41,6 +42,7 @@ class SqliteDbHelper {
 
   static Future<void> insertData(PickingModel data) async {
     final db = await database;
+    print(data);
     await db.insert('picking_detail_table', data.toMap());
   }
 
@@ -63,6 +65,7 @@ class SqliteDbHelper {
         binShelfNo: maps[i]['binShelfNo'],
         quantity: maps[i]['quantity'],
         requestQty: maps[i]['requestQty'],
+        line: maps[i]['line'],
       );
     });
   }
@@ -91,6 +94,7 @@ class SqliteDbHelper {
         binShelfNo: maps[i]['binShelfNo'],
         quantity: maps[i]['quantity'],
         requestQty: maps[i]['requestQty'],
+        line: maps[i]['line'],
       );
     });
   }

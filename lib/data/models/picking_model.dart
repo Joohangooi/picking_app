@@ -12,6 +12,7 @@ class PickingModel {
   final String binShelfNo;
   final double quantity;
   final double requestQty;
+  final int line;
 
   PickingModel({
     required this.documentNo,
@@ -27,6 +28,7 @@ class PickingModel {
     required this.binShelfNo,
     required this.quantity,
     required this.requestQty,
+    required this.line,
   });
 
   factory PickingModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class PickingModel {
       stock: json['stock'] ?? '',
       requestQty: (json['requestQty'] ?? 0).toDouble(),
       pickedNo: json['pickedNo'] ?? '',
+      line: json['line'] ?? 0,
     );
   }
 
@@ -62,6 +65,7 @@ class PickingModel {
       'binShelfNo': binShelfNo,
       'description': description,
       'requestQty': requestQty,
+      'line': line,
     };
   }
 
@@ -80,6 +84,7 @@ class PickingModel {
       'binShelfNo': binShelfNo,
       'description': description,
       'requestQty': requestQty,
+      'line': line,
     };
   }
 }
