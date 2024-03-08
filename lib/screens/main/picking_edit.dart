@@ -16,7 +16,7 @@ class PickingDetailEdit extends StatefulWidget {
 }
 
 class _PickingDetailEditState extends State<PickingDetailEdit> {
-  TextEditingController _pickedQtyController = TextEditingController();
+  final TextEditingController _pickedQtyController = TextEditingController();
   bool isLoading = false;
 
   @override
@@ -210,7 +210,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               );
@@ -228,7 +228,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
         labelText: 'Update Picked Quantity',
         hintText:
             widget.pickingData['quantity'].toString(), // Set hint text here
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
 
@@ -236,7 +236,9 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         onPressed: () async {
-          double newQuantity = double.parse(_pickedQtyController.text);
+          double newQuantity = double.parse(_pickedQtyController.text == ''
+              ? pickingModel.quantity.toString()
+              : _pickedQtyController.text);
           try {
             setState(() {
               isLoading = true;
