@@ -12,8 +12,8 @@ class WelcomeBackPage extends StatefulWidget {
 
 class _WelcomeBackPageState extends State<WelcomeBackPage> {
   TextEditingController email = TextEditingController();
-
   TextEditingController password = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,54 +46,72 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
       ),
     );
 
-    Widget loginButton = Material(
-        child: Center(
-            child: IconButton(
-      icon: const Icon(
-        Icons.keyboard_arrow_right,
-        size: 30,
-      ),
-      color: Colors.black,
-      onPressed: () async {
-        try {
-          // Call the login API using the AuthService
-          final authService = AuthService();
-          final response =
-              await authService.loginUser(email.text, password.text);
+    Widget loginButton = Stack(children: [
+      Material(
+          child: Center(
+              child: IconButton(
+        icon: const Icon(
+          Icons.keyboard_arrow_right,
+          size: 30,
+        ),
+        color: Colors.black,
+        onPressed: () async {
+          setState(() {
+            isLoading = true;
+          });
+          try {
+            // Call the login API using the AuthService
+            final authService = AuthService();
+            final response =
+                await authService.loginUser(email.text, password.text);
 
-          // If authentication is successful, handle the response accordingly
-          final token = response['token'];
+            // If authentication is successful, handle the response accordingly
+            final token = response['token'];
 
-          final jwtService = jwt_service();
-          await jwtService.storeToken(token);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => PickingMainPage()),
-          );
-        } catch (e) {
-          // Extract the relevant part of the exception message
-          final errorMessage = e.toString().split('Error: Exception: ')[1];
-          // Handle the authentication failure
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Authentication Failed!'),
-                content: Text(errorMessage),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      },
-    )));
+            final jwtService = jwt_service();
+            await jwtService.storeToken(token);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PickingMainPage()),
+            );
+          } catch (e) {
+            // Extract the relevant part of the exception message
+            final errorMessage = e.toString().split('Error: Exception: ')[1];
+            // Handle the authentication failure
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Authentication Failed!'),
+                  content: Text(errorMessage),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          } finally {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
+      ))),
+      if (isLoading) // Show loading indicator if isLoading is true
+        Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+    ]);
 
     Widget loginForm = Column(
       mainAxisAlignment: MainAxisAlignment.start,

@@ -18,6 +18,7 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingDetailData = [];
   List<Map<String, dynamic>> filteredPickingData = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -28,12 +29,22 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
   }
 
   void fetchLatestData() async {
-    List<Map<String, dynamic>> latestData =
-        await SqliteDbHelper.getLatestData(widget.pickingData.first.documentNo);
-    setState(() {
-      pickingDetailData = latestData;
-      filteredPickingData = List.from(pickingDetailData);
-    });
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      List<Map<String, dynamic>> latestData =
+          await SqliteDbHelper.getLatestData(
+              widget.pickingData.first.documentNo);
+      setState(() {
+        pickingDetailData = latestData;
+        filteredPickingData = List.from(pickingDetailData);
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void filterPickingData(String query) {
@@ -83,7 +94,11 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: ListView(
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),

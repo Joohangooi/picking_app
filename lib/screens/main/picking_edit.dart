@@ -17,6 +17,7 @@ class PickingDetailEdit extends StatefulWidget {
 
 class _PickingDetailEditState extends State<PickingDetailEdit> {
   TextEditingController _pickedQtyController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -237,6 +238,9 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
         onPressed: () async {
           double newQuantity = double.parse(_pickedQtyController.text);
           try {
+            setState(() {
+              isLoading = true;
+            });
             Future<bool> success = SqliteDbHelper.updateQuantity(
               widget.pickingData['documentNo'],
               widget.pickingData['line'],
@@ -258,6 +262,10 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                 content: Text('Error: $e'),
               ),
             );
+          } finally {
+            setState(() {
+              isLoading = false;
+            });
           }
         },
         child: const Text('Save'),
@@ -268,19 +276,23 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
       appBar: AppBarWidget(
         title: '${widget.pickingData['stock']}',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-            child: Column(
-          children: [
-            pickingInfo,
-            const SizedBox(height: 16.0),
-            inputField,
-            const SizedBox(height: 16.0),
-            saveButton,
-          ],
-        )),
-      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  pickingInfo,
+                  const SizedBox(height: 16.0),
+                  inputField,
+                  const SizedBox(height: 16.0),
+                  saveButton,
+                ],
+              )),
+            ),
     );
   }
 }

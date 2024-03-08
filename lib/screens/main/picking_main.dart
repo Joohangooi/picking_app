@@ -21,6 +21,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingData = [];
   List<Map<String, dynamic>> filteredPickingData = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,6 +31,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   Future<void> fetchPickingData() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final result = await MainPickingService().getMainPickingData();
       setState(() {
         if ((result != 401) && (result != null)) {
@@ -85,11 +89,18 @@ class _PickingMainPageState extends State<PickingMainPage> {
         },
       );
       // Handle other errors
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> handlePickingConfirmation(String documentNo) async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       var pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
 
       if (pickingData.isNotEmpty) {
@@ -167,6 +178,10 @@ class _PickingMainPageState extends State<PickingMainPage> {
           );
         },
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -219,95 +234,100 @@ class _PickingMainPageState extends State<PickingMainPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: SearchBarWidget(
-                controller: searchController,
-                onChanged: (value) {
-                  filterPickingData(value);
-                },
-              ),
-            ),
-            // Use ListView.builder to create cards from fetched data
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredPickingData.length,
-              itemBuilder: (context, index) {
-                final data = filteredPickingData[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 15,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: CustomCard(
-                        date: data['documentDate'],
-                        pickedNo: data['documentNo'],
-                        companyName: data['customerName'],
-                        zone: data['zone'],
-                        actionButton: IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          onPressed: () {
-                            final dbHelper = SqliteDbHelper();
-                            dbHelper.deleteAllPickingRecords();
-                          },
-                        ),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Confirm Picking'),
-                                content: const Text(
-                                    'Do you want to pick this order?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('No'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      await handlePickingConfirmation(
-                                          data['documentNo']);
-                                    },
-                                    child: const Text('Yes'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: SearchBarWidget(
+                      controller: searchController,
+                      onChanged: (value) {
+                        filterPickingData(value);
+                      },
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: company_logos,
-            ),
-          ],
-        ),
+                  // Use ListView.builder to create cards from fetched data
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredPickingData.length,
+                    itemBuilder: (context, index) {
+                      final data = filteredPickingData[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 15,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: CustomCard(
+                              date: data['documentDate'],
+                              pickedNo: data['documentNo'],
+                              companyName: data['customerName'],
+                              zone: data['zone'],
+                              actionButton: IconButton(
+                                icon: const Icon(Icons.delete_outline),
+                                onPressed: () {
+                                  final dbHelper = SqliteDbHelper();
+                                  dbHelper.deleteAllPickingRecords();
+                                },
+                              ),
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirm Picking'),
+                                      content: const Text(
+                                          'Do you want to pick this order?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('No'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            await handlePickingConfirmation(
+                                                data['documentNo']);
+                                          },
+                                          child: const Text('Yes'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: company_logos,
+                  ),
+                ],
+              ),
       ),
     );
   }
