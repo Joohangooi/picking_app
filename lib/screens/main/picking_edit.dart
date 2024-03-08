@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:picking_app/data/models/picking_model.dart';
+import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 
 class PickingDetailEdit extends StatefulWidget {
@@ -13,18 +14,15 @@ class PickingDetailEdit extends StatefulWidget {
 }
 
 class _PickingDetailEditState extends State<PickingDetailEdit> {
-  late TextEditingController _pickedQtyController;
+  TextEditingController _pickedQtyController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _pickedQtyController =
-        TextEditingController(text: widget.pickingData['quantity'].toString());
   }
 
   @override
   void dispose() {
-    _pickedQtyController.dispose();
     super.dispose();
   }
 
@@ -224,36 +222,41 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
           );
         }
       },
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         labelText: 'Update Picked Quantity',
+        hintText:
+            widget.pickingData['quantity'].toString(), // Set hint text here
         border: OutlineInputBorder(),
       ),
     );
 
-    Widget save_button = Align(
+    Widget saveButton = Align(
       alignment: Alignment.centerRight,
       child: ElevatedButton(
-        onPressed: () {
-          // Implement the logic to update the picked quantity
-          // and save the changes
-          // final updatedPickingData = PickingModel(
-          //   documentNo: widget.pickingData.documentNo,
-          //   stock: widget.pickingData.stock,
-          //   description: widget.pickingData.description,
-          //   requestQty: widget.pickingData.requestQty,
-          //   quantity: int.parse(_pickedQtyController.text),
-          //   // Update other properties as needed
-          // );
-
-          // Here, you can call a function to update the data in the database
-          // or perform any other necessary operations
-
-          // Show a success message or navigate back to the previous screen
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Picked quantity updated successfully'),
-            ),
-          );
+        onPressed: () async {
+          double newQuantity = double.parse(_pickedQtyController.text);
+          try {
+            Future<bool> success = SqliteDbHelper.updateQuantity(
+              widget.pickingData['documentNo'],
+              widget.pickingData['line'],
+              newQuantity,
+            );
+            if (await success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Picked quantity updated successfully'),
+                ),
+              );
+              Navigator.pop(context);
+            }
+          } catch (e) {
+            // prompt an error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: $e'),
+              ),
+            );
+          }
         },
         child: const Text('Save'),
       ),
@@ -272,7 +275,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             const SizedBox(height: 16.0),
             inputField,
             const SizedBox(height: 16.0),
-            save_button,
+            saveButton,
           ],
         )),
       ),

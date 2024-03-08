@@ -42,8 +42,23 @@ class SqliteDbHelper {
 
   static Future<void> insertData(PickingModel data) async {
     final db = await database;
-    print(data);
     await db.insert('picking_detail_table', data.toMap());
+  }
+
+  static Future<bool> updateQuantity(
+      String documentNo, int line, double newQuantity) async {
+    try {
+      final db = await database;
+      int rowsUpdated = await db.update(
+        'picking_detail_table',
+        {'quantity': newQuantity},
+        where: 'documentNo = ? AND line = ?',
+        whereArgs: [documentNo, line],
+      );
+      return rowsUpdated > 0;
+    } catch (e) {
+      return false;
+    }
   }
 
   static Future<List<PickingModel>> getData() async {
