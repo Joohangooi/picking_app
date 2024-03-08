@@ -127,7 +127,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                         location: data['location'],
                         zone: data['zone'],
                         requestQty: data['requestQty'].toString(),
-                        varianceQty: data['quantity'].toString(),
+                        varianceQty:
+                            (data['requestQty'] - data['quantity']).toString(),
                         pickedQty: data['quantity'].toString(),
                         binNo: data['binShelfNo'],
                         // remarks: data['remarks'],
