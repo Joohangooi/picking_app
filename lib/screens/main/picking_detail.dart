@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_model.dart';
-import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
@@ -124,12 +124,18 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                         // remarks: data['remarks'],
                         option: data['option'],
                         actionButton: IconButton(
-                          icon: const Icon(Icons.delete_outline),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
-                            final dbHelper = SqliteDbHelper();
-                            dbHelper.deleteAllPickingRecords();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PickingDetailEdit(pickingData: data),
+                              ),
+                            );
                           },
                         ),
+
                         onTap: () {
                           print('Card tapped: ${data['documentNo']}');
                         },

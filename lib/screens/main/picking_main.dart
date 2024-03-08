@@ -93,7 +93,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
       var pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
 
       if (pickingData.isNotEmpty) {
-        Navigator.of(context).pop(); // Dismiss the dialog box
+        Navigator.of(context).pop();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -261,6 +261,13 @@ class _PickingMainPageState extends State<PickingMainPage> {
                         pickedNo: data['documentNo'],
                         companyName: data['customerName'],
                         zone: data['zone'],
+                        actionButton: IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          onPressed: () {
+                            final dbHelper = SqliteDbHelper();
+                            dbHelper.deleteAllPickingRecords();
+                          },
+                        ),
                         onTap: () {
                           showDialog(
                             context: context,
