@@ -248,11 +248,44 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             const SizedBox(height: 16.0),
             TextField(
               controller: _pickedQtyController,
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                // Parse the input value to an integer
+                int? newValue = int.tryParse(value);
+                // Check if the parsed value is greater than the allowed quantity
+                if (newValue != null && newValue > pickingModel.requestQty) {
+                  // Show an error message
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('New Value Exceeded Error'),
+                        content: Text(
+                            'Quantity cannot exceed ${pickingModel.requestQty}.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  // Reset the input field to the maximum allowed quantity
+                  _pickedQtyController.text =
+                      pickingModel.requestQty.toString();
+                  // Move the cursor to the end of the text
+                  _pickedQtyController.selection = TextSelection.fromPosition(
+                    TextPosition(offset: _pickedQtyController.text.length),
+                  );
+                }
+              },
               decoration: const InputDecoration(
-                labelText: 'Picked Quantity',
+                labelText: 'Update Picked Quantity',
                 border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.number,
             ),
             const Spacer(),
             ElevatedButton(
