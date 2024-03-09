@@ -9,7 +9,12 @@ import 'package:picking_app/services/picking_service.dart';
 
 class PickingDetailPage extends StatefulWidget {
   final List<PickingModel> pickingData;
-  const PickingDetailPage({super.key, required this.pickingData});
+  final VoidCallback fetchPickingDataCallback; // Callback function
+
+  const PickingDetailPage(
+      {super.key,
+      required this.pickingData,
+      required this.fetchPickingDataCallback});
 
   @override
   _PickingDetailPageState createState() => _PickingDetailPageState();
@@ -98,15 +103,19 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
               // Call the updatePickingDetail method and wait for the response
               int statusCode =
                   await PickingService().updatePickingDetail(pickingDetailData);
-
+              bool isDeleted = await SqliteDbHelper.deleteRecord(
+                  widget.pickingData.first.documentNo);
               // Handle the response
-              if (statusCode == 200) {
+              if (statusCode == 200 && isDeleted) {
+                widget.fetchPickingDataCallback();
+
                 // Success: Picking details updated successfully
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Picking details updated successfully.'),
                   ),
                 );
+
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

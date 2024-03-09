@@ -45,7 +45,6 @@ class SqliteDbHelper {
     await db.insert('picking_detail_table', data.toMap());
   }
 
-
   static Future<bool> updateDetail(
       String documentNo, int line, double newQuantity, double variance) async {
     try {
@@ -62,6 +61,25 @@ class SqliteDbHelper {
       );
       return rowsUpdated > 0;
     } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> deleteRecord(String documentNo) async {
+    try {
+      final db = await database;
+      int rowsDeleted = await db.delete(
+        'picking_detail_table',
+        where: 'documentNo = ?',
+        whereArgs: [documentNo],
+      );
+      if (rowsDeleted > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error deleting record: $e');
       return false;
     }
   }

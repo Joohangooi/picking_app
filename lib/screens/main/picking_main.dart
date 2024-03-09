@@ -108,7 +108,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PickingDetailPage(pickingData: pickingData),
+            builder: (context) => PickingDetailPage(
+                pickingData: pickingData,
+                fetchPickingDataCallback: fetchPickingData),
           ),
         );
         return;
@@ -152,7 +154,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PickingDetailPage(pickingData: pickingData),
+            builder: (context) => PickingDetailPage(pickingData: pickingData,
+                fetchPickingDataCallback: fetchPickingData),
           ),
         );
       }
@@ -285,8 +288,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                               actionButton: IconButton(
                                 icon: const Icon(Icons.delete_outline),
                                 onPressed: () {
-                                  final dbHelper = SqliteDbHelper();
-                                  dbHelper.deleteAllPickingRecords();
+                                  // SqliteDbHelper.deleteRecord(
+                                  //     data['documentNo']);
                                 },
                               ),
                               onTap: () {
