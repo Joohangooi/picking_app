@@ -5,6 +5,7 @@ import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
+import 'package:picking_app/services/picking_service.dart';
 
 class PickingDetailPage extends StatefulWidget {
   final List<PickingModel> pickingData;
@@ -89,7 +90,45 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
             : 'Picking List',
         actionButton: IconButton(
           icon: const Icon(Icons.sync),
-          onPressed: () async {},
+          onPressed: () async {
+            try {
+              setState(() {
+                isLoading = true;
+              });
+              // Call the updatePickingDetail method and wait for the response
+              int statusCode =
+                  await PickingService().updatePickingDetail(pickingDetailData);
+
+              // Handle the response
+              if (statusCode == 200) {
+                // Success: Picking details updated successfully
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Picking details updated successfully.'),
+                  ),
+                );
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Update Failed!'),
+                  ),
+                );
+              }
+            } catch (e) {
+              // Exception: Error encountered
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Error: $e'),
+                ),
+              );
+              print(e.toString());
+            } finally {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          },
         ),
       ),
       body: Padding(
@@ -99,86 +138,88 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                 child: CircularProgressIndicator(),
               )
             : ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: SearchBarWidget(
-                controller: searchController,
-                onChanged: (value) {
-                  filterPickingData(value);
-                },
-              ),
-            ),
-            // Use ListView.builder to create cards from fetched data
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredPickingData.length,
-              itemBuilder: (context, index) {
-                final data = filteredPickingData[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 15,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: CustomCard(
-                        pickedNo: data['documentNo'],
-                        stockCode: data['stock'],
-                        stockDesc: data['description'],
-                        location: data['location'],
-                        zone: data['zone'],
-                        requestQty: data['requestQty'].toString(),
-                        varianceQty:
-                            (data['requestQty'] - data['quantity']).toString(),
-                        pickedQty: data['quantity'].toString(),
-                        binNo: data['binShelfNo'],
-                        // remarks: data['remarks'],
-                        option: data['option'],
-                        actionButton: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PickingDetailEdit(
-                                  pickingData: data,
-                                  onSuccess: fetchLatestData,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        onTap: () {
-                          print('Card tapped: ${data['documentNo']}');
-                        },
-                      ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: SearchBarWidget(
+                      controller: searchController,
+                      onChanged: (value) {
+                        filterPickingData(value);
+                      },
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: company_logos,
-            ),
-          ],
-        ),
+                  // Use ListView.builder to create cards from fetched data
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredPickingData.length,
+                    itemBuilder: (context, index) {
+                      final data = filteredPickingData[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 15,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: CustomCard(
+                              pickedNo: data['documentNo'],
+                              stockCode: data['stock'],
+                              stockDesc: data['description'],
+                              location: data['location'],
+                              zone: data['zone'],
+                              requestQty: data['requestQty'].toString(),
+                              varianceQty:
+                                  (data['requestQty'] - data['quantity'])
+                                      .toString(),
+                              pickedQty: data['quantity'].toString(),
+                              binNo: data['binShelfNo'],
+                              // remarks: data['remarks'],
+                              option: data['option'],
+                              actionButton: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PickingDetailEdit(
+                                        pickingData: data,
+                                        onSuccess: fetchLatestData,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+
+                              onTap: () {
+                                print('Card tapped: ${data['documentNo']}');
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: company_logos,
+                  ),
+                ],
+              ),
       ),
     );
   }
