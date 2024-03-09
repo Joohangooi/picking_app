@@ -249,16 +249,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
                     edgeOffset:
                         20.0, // controls the distance from the edge of the screen where the refresh indicator should appear
                     strokeWidth: 3.0,
-                    triggerMode:
-                        RefreshIndicatorTriggerMode.onEdge, // Trigger on edge
-
+                    triggerMode: RefreshIndicatorTriggerMode.onEdge,
                     child: NotificationListener<ScrollNotification>(
                       onNotification: (ScrollNotification notification) {
-                        if (notification is ScrollEndNotification &&
-                            notification.metrics.pixels < 50) {
-                          // Threshold value can be adjusted
-                          fetchPickingData();
-                        }
                         return false;
                       },
                       child: ListView(
