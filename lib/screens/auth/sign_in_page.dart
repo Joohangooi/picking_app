@@ -34,16 +34,23 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _header(context),
-                _inputField(context),
-                _forgotPassword(context),
-                _signup(context),
-              ],
+          SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+                  _logo,
+                  const SizedBox(height: 20),
+                  _header(context),
+                  const SizedBox(height: 40),
+                  _inputField(context),
+                  const SizedBox(height: 40),
+                  _forgotPassword(context),
+                  const SizedBox(height: 40),
+                  _signup(context),
+                ],
+              ),
             ),
           ),
         ],
@@ -51,14 +58,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _header(context) {
-    return const Column(
+  _header(BuildContext context) {
+    return Column(
       children: [
-        Text(
+        const Text(
           "Welcome Back",
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
         ),
-        Text("Enter your credential to login"),
+        const SizedBox(height: 10),
+        RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'Powered by ',
+                style: TextStyle(color: Colors.black),
+              ),
+              TextSpan(
+                text: 'Greenstem Software Business',
+                style: TextStyle(color: Colors.green),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -116,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
               await jwtService.storeToken(token);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => PickingMainPage()),
+                MaterialPageRoute(
+                    builder: (context) => const PickingMainPage()),
               );
             } catch (e) {
               // Extract the relevant part of the exception message
@@ -208,4 +230,10 @@ class _LoginPageState extends State<LoginPage> {
       ],
     );
   }
+
+  final Widget _logo = const Image(
+      width: 120,
+      height: 120,
+      image:
+          AssetImage('assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'));
 }
