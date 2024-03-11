@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picking_app/blocs/signup_bloc.dart';
-import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/services/AuthService.dart';
 
 class SignupPage extends StatefulWidget {
@@ -80,7 +80,6 @@ class _SignupPageState extends State<SignupPage> {
                               _phoneNumController.text,
                               _addressController.text,
                               _companyController.text);
-                          print(response);
                           if (response == 200) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -91,7 +90,7 @@ class _SignupPageState extends State<SignupPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => WelcomeBackPage()),
+                                  builder: (context) => LoginPage()),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -323,8 +322,7 @@ class _SignupPageState extends State<SignupPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            WelcomeBackPage()),
+                                        builder: (context) => LoginPage()),
                                   );
                                 },
                                 child: Text(

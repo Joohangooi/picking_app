@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/screens/main/picking_main.dart';
 import 'package:picking_app/services/jwt_service.dart';
 
@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
       // If token doesn't exist, navigate to the welcome page
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => WelcomeBackPage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     }
   }
@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   void navigationPage() {
     Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (_) => WelcomeBackPage()));
+        .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
   }
 
   Widget build(BuildContext context) {
