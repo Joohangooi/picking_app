@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:picking_app/app_properties.dart';
 import 'package:picking_app/services/AuthService.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/screens/main/picking_main.dart';
