@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picking_app/screens/auth/sign_up_page.dart';
 import 'package:picking_app/services/AuthService.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/screens/main/picking_main.dart';
@@ -21,7 +22,6 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
         height: 120,
         image: AssetImage(
             'assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'));
-
     Widget welcomeBack = const Text(
       'Welcome Back',
       style: TextStyle(
@@ -183,7 +183,12 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupPage()),
+                );
+              },
               child: Text(
                 'Create account',
                 style: TextStyle(
