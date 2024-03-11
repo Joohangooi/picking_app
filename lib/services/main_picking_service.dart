@@ -56,4 +56,30 @@ class MainPickingService {
       throw Exception('Error encountered! Error: $e');
     }
   }
+
+  Future<int> deletePickingDetailByDocumentNo(String documentNo) async {
+    try {
+      final token = await jwtService.getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      final response = await http.delete(
+        Uri.parse(
+            '$apiUrl/api/Main/picking/DeletePickingMainByDocumentNo/$documentNo'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        return response.statusCode;
+      }
+    } catch (e) {
+      throw Exception('Error encountered! Error: $e');
+    }
+  }
 }
