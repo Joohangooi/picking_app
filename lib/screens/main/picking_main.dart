@@ -206,7 +206,11 @@ class _PickingMainPageState extends State<PickingMainPage> {
                     .contains(query.toLowerCase()) ||
                 ('Zone ${item['zone']}'
                     .toLowerCase()
-                    .contains(query.toLowerCase())))
+                    .contains(query.toLowerCase())) ||
+                item['documentDate']
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['option'].toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     });

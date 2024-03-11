@@ -46,72 +46,90 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
       ),
     );
 
-    Widget loginButton = Stack(children: [
-      Material(
-          child: Center(
+    Widget loginButton = Align(
+      alignment: Alignment.centerRight,
+      child: Stack(
+        children: [
+          Material(
+            child: Container(
+              // decoration: BoxDecoration(
+              //   shape: BoxShape.circle,
+              //   border: Border.all(
+              //     color: Colors.black, // Adjust border color as needed
+              //     width: 0.5, // Adjust border width as needed
+              //   ),
+              // ),
               child: IconButton(
-        icon: const Icon(
-          Icons.keyboard_arrow_right,
-          size: 30,
-        ),
-        color: Colors.black,
-        onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
-          try {
-            // Call the login API using the AuthService
-            final authService = AuthService();
-            final response =
-                await authService.loginUser(email.text, password.text);
+                icon: const Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 35,
+                ),
+                color: Colors.black,
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  try {
+                    // Call the login API using the AuthService
+                    final authService = AuthService();
+                    final response = await authService.loginUser(
+                      email.text,
+                      password.text,
+                    );
 
-            // If authentication is successful, handle the response accordingly
-            final token = response['token'];
+                    // If authentication is successful, handle the response accordingly
+                    final token = response['token'];
 
-            final jwtService = jwt_service();
-            await jwtService.storeToken(token);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PickingMainPage()),
-            );
-          } catch (e) {
-            // Extract the relevant part of the exception message
-            final errorMessage = e.toString().split('Error: Exception: ')[1];
-            // Handle the authentication failure
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Authentication Failed!'),
-                  content: Text(errorMessage),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                    final jwtService = jwt_service();
+                    await jwtService.storeToken(token);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PickingMainPage()),
+                    );
+                  } catch (e) {
+                    // Extract the relevant part of the exception message
+                    final errorMessage =
+                        e.toString().split('Error: Exception: ')[1];
+                    // Handle the authentication failure
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Authentication Failed'),
+                          content: Text(errorMessage),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
                       },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-          } finally {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        },
-      ))),
-      if (isLoading) // Show loading indicator if isLoading is true
-        Positioned.fill(
-          child: Container(
-            color: Colors.black.withOpacity(0.5),
-            child: Center(
-              child: CircularProgressIndicator(),
+                    );
+                  } finally {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+                },
+              ),
             ),
           ),
-        ),
-    ]);
+          if (isLoading) // Show loading indicator if isLoading is true
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
 
     Widget loginForm = Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -123,6 +141,7 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               decoration: const InputDecoration(
                 hintText: 'user@greenstem.com',
                 contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                fillColor: Colors.white,
               ),
               controller: email,
               style: const TextStyle(fontSize: 16.0),
@@ -147,40 +166,107 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
       ],
     );
 
-    Widget forgotPassword = Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text(
-            'Forgot your password? ',
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              fontSize: 14.0,
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: const Text(
-              'Reset password',
+    Widget registerAcc = Positioned(
+      bottom: 35, // Adjust the value as needed
+      left: 0,
+      right: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Not a member? ',
               style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontStyle: FontStyle.italic,
+                color: Colors.black,
+                fontSize: 16.0,
               ),
             ),
-          ),
-        ],
+            InkWell(
+              onTap: () {},
+              child: Text(
+                'Create account',
+                style: TextStyle(
+                  color: Colors.green[800],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Widget forgotPassword = Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Forgot your password? ',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.black,
+                fontSize: 16.0,
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                // Show an alert box when tapped
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Reset Password'),
+                      content: const Text('This feature is not available now.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Text(
+                'Reset password',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: const BoxDecoration(
-              color: greenStemBg,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: const AssetImage(
+                    "assets/background_imgs/picking-bg-1.jpeg"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.white.withOpacity(0.65),
+                  BlendMode.lighten,
+                ),
+                repeat: ImageRepeat.noRepeat,
+              ),
             ),
           ),
           SingleChildScrollView(
@@ -215,9 +301,10 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               ),
             ),
           ),
+          registerAcc,
+          forgotPassword,
         ],
       ),
-      bottomNavigationBar: forgotPassword,
     );
   }
 }

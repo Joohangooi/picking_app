@@ -9,7 +9,7 @@ import 'package:picking_app/services/picking_service.dart';
 
 class PickingDetailPage extends StatefulWidget {
   final List<PickingModel> pickingData;
-  final VoidCallback fetchPickingDataCallback; // Callback function
+  final VoidCallback fetchPickingDataCallback;
 
   const PickingDetailPage(
       {super.key,
