@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picking_app/blocs/signup_bloc.dart';
 import 'package:picking_app/screens/auth/welcome_back_page.dart';
+import 'package:picking_app/services/AuthService.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -67,10 +68,42 @@ class _SignupPageState extends State<SignupPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   width: double.infinity,
                   child: BlocListener<SignupBloc, SignupState>(
-                    listener: (context, state) {
+                    listener: (context, state) async {
                       if (state is SignupSuccess) {
                         // Handle signup success
-                        print('Signup successful');
+                        try {
+                          final authService = AuthService();
+                          final response = await authService.registerUser(
+                              _nameController.text,
+                              _emailController.text,
+                              _passwordController.text,
+                              _phoneNumController.text,
+                              _addressController.text,
+                              _companyController.text);
+                          print(response);
+                          if (response == 200) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Signup successful'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WelcomeBackPage()),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Signup failed'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          print(e.toString());
+                        } finally {}
                       } else if (state is SignupFailure) {
                         // Handle signup failure
                         print('Signup failed');

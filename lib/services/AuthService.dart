@@ -33,4 +33,47 @@ class AuthService {
       throw Exception('Failed to login. Error: $e');
     }
   }
+
+  Future<int> registerUser(String name, String email, String password,
+      String phoneNum, String address, String company) async {
+    // API endpoint
+    String url = '$apiUrl/api/Account/register';
+
+    // Request body
+    Map<String, dynamic> requestBody = {
+      'name': name,
+      'email': email,
+      'password': password,
+      'phoneNum': phoneNum,
+      'address': address,
+      'company': company,
+    };
+
+    // Encoding the request body to JSON
+    String jsonBody = jsonEncode(requestBody);
+
+    try {
+      // Making the POST request
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonBody,
+      );
+
+      // Checking the response status code
+      if (response.statusCode == 200) {
+        // Registration successful
+        return response.statusCode;
+      } else if (response.statusCode == 409) {
+        // Email already registered
+        return response.statusCode;
+      } else {
+        return response.statusCode;
+      }
+    } catch (e) {
+      return 500;
+    }
+  }
 }
