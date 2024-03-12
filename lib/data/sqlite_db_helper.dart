@@ -84,7 +84,7 @@ class SqliteDbHelper {
     }
   }
 
-  static Future<List<PickingModel>> getData() async {
+  static Future<List<PickingModel>> getAllRecords() async {
     final db = await database;
     final List<Map<String, dynamic>> maps =
         await db.query('picking_detail_table');

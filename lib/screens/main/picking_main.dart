@@ -251,8 +251,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                   children: [
                     const TabBar(
                       tabs: [
-                        Tab(text: 'Main'), // First tab
-                        Tab(text: 'Tab Screen'), // Second tab
+                        Tab(text: 'Main'),
+                        Tab(text: 'Local Data'),
                       ],
                     ),
                     Expanded(
