@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/services/jwt_service.dart';
 
 class PickingService {
-  static const String apiUrl = 'https://picking-api.typosquare.com';
+  static const String apiUrl = 'https://picking-app-api.onlinestar.com.my';
   final jwtService = jwt_service();
 
   Future<dynamic> getPickingDetailByDocumentNo(String documentNo) async {

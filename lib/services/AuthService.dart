@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  static const String apiUrl =
-      'https://picking-api.typosquare.com'; // Replace this with your actual API URL
+  static const String apiUrl = 'https://picking-app-api.onlinestar.com.my';
 
   Future<Map<String, dynamic>> loginUser(String email, String password) async {
     try {

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:picking_app/services/jwt_service.dart';
 
 class MainPickingService {
-  static const String apiUrl = 'https://picking-api.typosquare.com';
+  static const String apiUrl = 'https://picking-app-api.onlinestar.com.my';
   final jwtService = jwt_service();
 
   Future<dynamic> getMainPickingData() async {

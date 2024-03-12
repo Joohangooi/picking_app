@@ -40,6 +40,11 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
+  void _resetSignupBloc() {
+    _signupBloc.close();
+    _signupBloc = SignupBloc();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -92,6 +97,13 @@ class _SignupPageState extends State<SignupPage> {
                               MaterialPageRoute(
                                   builder: (context) => LoginPage()),
                             );
+                          } else if (response == 409) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Email Address Existence!'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -105,7 +117,6 @@ class _SignupPageState extends State<SignupPage> {
                         } finally {}
                       } else if (state is SignupFailure) {
                         // Handle signup failure
-                        print('Signup failed');
                       }
                     },
                     child: Form(
@@ -169,6 +180,11 @@ class _SignupPageState extends State<SignupPage> {
                                 builder: (context, state) {
                                   return TextFormField(
                                     controller: _emailController,
+                                    onChanged: (value) {
+                                      if (value != _emailController.text) {
+                                        _resetSignupBloc();
+                                      }
+                                    },
                                     decoration: InputDecoration(
                                       hintText: "Email",
                                       border: OutlineInputBorder(
