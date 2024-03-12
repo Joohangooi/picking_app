@@ -9,7 +9,7 @@ import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
-import 'package:picking_app/widgets/tab_bar_widget.dart';
+import 'package:picking_app/widgets/local_picking_detail.dart';
 
 class PickingMainPage extends StatefulWidget {
   const PickingMainPage({super.key});
@@ -443,7 +443,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                               ),
                             ),
                           ),
-                          const TabScreen(),
+                          const LocalPickingDetail(),
                         ],
                       ),
                     ),

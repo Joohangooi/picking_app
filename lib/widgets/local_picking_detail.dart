@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TabScreen extends StatefulWidget {
-  const TabScreen({Key? key}) : super(key: key);
+class LocalPickingDetail extends StatefulWidget {
+  const LocalPickingDetail({Key? key}) : super(key: key);
 
   @override
-  _TabScreenState createState() => _TabScreenState();
+  _LocalPickingState createState() => _LocalPickingState();
 }
 
-class _TabScreenState extends State<TabScreen> {
+class _LocalPickingState extends State<LocalPickingDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
