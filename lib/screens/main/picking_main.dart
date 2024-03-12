@@ -9,6 +9,7 @@ import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
+import 'package:picking_app/widgets/tab_bar_widget.dart';
 
 class PickingMainPage extends StatefulWidget {
   const PickingMainPage({super.key});
@@ -224,191 +225,232 @@ class _PickingMainPageState extends State<PickingMainPage> {
     );
 
     return Scaffold(
-        appBar: AppBarWidget(
-          title: 'Greenstem',
-          actionButton: IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              // Implement logout functionality here
-              await jwt_service().deleteToken();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-          ),
+      appBar: AppBarWidget(
+        title: 'Greenstem',
+        actionButton: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            // Implement logout functionality here
+            await jwt_service().deleteToken();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
+          },
         ),
-        body: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : RefreshIndicator(
-                    onRefresh: fetchPickingData,
-                    displacement:
-                        40.0, // controls how far the user needs to pull down before the refresh indicator appears
-                    edgeOffset:
-                        20.0, // controls the distance from the edge of the screen where the refresh indicator should appear
-                    strokeWidth: 3.0,
-                    triggerMode: RefreshIndicatorTriggerMode.onEdge,
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification notification) {
-                        return false;
-                      },
-                      child: ListView(
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : DefaultTabController(
+                length: 2, // Number of tabs
+                child: Column(
+                  children: [
+                    const TabBar(
+                      tabs: [
+                        Tab(text: 'Main'), // First tab
+                        Tab(text: 'Tab Screen'), // Second tab
+                      ],
+                    ),
+                    Expanded(
+                      child: TabBarView(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: SearchBarWidget(
-                              controller: searchController,
-                              onChanged: (value) {
-                                filterPickingData(value);
+                          // Main screen content
+                          RefreshIndicator(
+                            onRefresh: fetchPickingData,
+                            displacement: 40.0,
+                            edgeOffset: 20.0,
+                            strokeWidth: 3.0,
+                            triggerMode: RefreshIndicatorTriggerMode.onEdge,
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification:
+                                  (ScrollNotification notification) {
+                                return false;
                               },
-                            ),
-                          ),
-                          // Use ListView.builder to create cards from fetched data
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filteredPickingData.length,
-                            itemBuilder: (context, index) {
-                              final data = filteredPickingData[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: Colors.grey.shade300,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Padding(
+                              child: ListView(
+                                children: [
+                                  Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: CustomCard(
-                                      date: data['documentDate'],
-                                      pickedNo: data['documentNo'],
-                                      companyName: data['customerName'],
-                                      option: data['option'],
-                                      zone: data['zone'],
-                                      actionButton: IconButton(
-                                        icon: const Icon(Icons.delete_outline),
-                                        onPressed: () async {
-                                          // Show a dialog to confirm deletion
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Confirm Deletion'),
-                                                content: Text(
-                                                    'Are you sure you want to delete this record?'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context); // Close the dialog
-                                                    },
-                                                    child: Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      // Delete the record
-                                                      try {
-                                                        final pickingDetail =
-                                                            await MainPickingService()
-                                                                .deletePickingDetailByDocumentNo(
-                                                                    data[
-                                                                        'documentNo']);
-
-                                                        if (pickingDetail ==
-                                                            200) {
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            const SnackBar(
-                                                              content: Text(
-                                                                  'Record deleted!'),
-                                                              backgroundColor:
-                                                                  Colors.green,
-                                                            ),
-                                                          );
-                                                          fetchPickingData();
-                                                        } else {
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            const SnackBar(
-                                                              content: Text(
-                                                                  'Operation Failed!'),
-                                                              backgroundColor:
-                                                                  Colors.red,
-                                                            ),
-                                                          );
-                                                        }
-                                                      } finally {
-                                                        Navigator.pop(
-                                                            context); // Close the dialog
-                                                      }
-                                                    },
-                                                    child: Text('Confirm'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title:
-                                                  const Text('Confirm Picking'),
-                                              content: const Text(
-                                                  'Do you want to pick this order?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('No'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    await handlePickingConfirmation(
-                                                        data['documentNo']);
-                                                  },
-                                                  child: const Text('Yes'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
+                                        vertical: 10.0),
+                                    child: SearchBarWidget(
+                                      controller: searchController,
+                                      onChanged: (value) {
+                                        filterPickingData(value);
                                       },
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                  // Use ListView.builder to create cards from fetched data
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: filteredPickingData.length,
+                                    itemBuilder: (context, index) {
+                                      final data = filteredPickingData[index];
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.5),
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                            ],
+                                            border: Border.all(
+                                              color: Colors.grey.shade300,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0),
+                                            child: CustomCard(
+                                              date: data['documentDate'],
+                                              pickedNo: data['documentNo'],
+                                              companyName: data['customerName'],
+                                              option: data['option'],
+                                              zone: data['zone'],
+                                              actionButton: IconButton(
+                                                icon: const Icon(
+                                                    Icons.delete_outline),
+                                                onPressed: () async {
+                                                  // Show a dialog to confirm deletion
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            'Confirm Deletion'),
+                                                        content: Text(
+                                                            'Are you sure you want to delete this record?'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context); // Close the dialog
+                                                            },
+                                                            child:
+                                                                Text('Cancel'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              // Delete the record
+                                                              try {
+                                                                final pickingDetail =
+                                                                    await MainPickingService()
+                                                                        .deletePickingDetailByDocumentNo(
+                                                                            data['documentNo']);
+
+                                                                if (pickingDetail ==
+                                                                    200) {
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                    const SnackBar(
+                                                                      content: Text(
+                                                                          'Record deleted!'),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .green,
+                                                                    ),
+                                                                  );
+                                                                  fetchPickingData();
+                                                                } else {
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                    const SnackBar(
+                                                                      content: Text(
+                                                                          'Operation Failed!'),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .red,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                              } finally {
+                                                                Navigator.pop(
+                                                                    context); // Close the dialog
+                                                              }
+                                                            },
+                                                            child:
+                                                                Text('Confirm'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Confirm Picking'),
+                                                      content: const Text(
+                                                          'Do you want to pick this order?'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('No'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            await handlePickingConfirmation(
+                                                                data[
+                                                                    'documentNo']);
+                                                          },
+                                                          child:
+                                                              const Text('Yes'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: company_logos,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: company_logos,
-                          ),
+                          const TabScreen(),
                         ],
                       ),
                     ),
-                  )));
+                  ],
+                ),
+              ),
+      ),
+    );
   }
 }
