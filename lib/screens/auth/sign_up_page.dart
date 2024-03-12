@@ -104,7 +104,7 @@ class _SignupPageState extends State<SignupPage> {
                                 backgroundColor: Colors.red,
                               ),
                             );
-                            _signupBloc.add(const TriggerSignupFailure(
+                            _signupBloc.add(const TriggerEmailError(
                                 "Email Address Existance!"));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -197,7 +197,8 @@ class _SignupPageState extends State<SignupPage> {
                                       filled: true,
                                       prefixIcon: const Icon(Icons.email),
                                       errorText: (state is SignupFailure)
-                                          ? state.email
+                                          ? (state.email ??
+                                              state.emailDuplicateError)
                                           : null,
                                     ),
                                   );

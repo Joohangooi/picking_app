@@ -9,7 +9,7 @@ part 'signup_state.dart';
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   SignupBloc() : super(SignupInitial()) {
     on<SignupFormSubmitted>(_onSignupFormSubmitted);
-    on<TriggerSignupFailure>(_onTriggerSignupFailure);
+    on<TriggerEmailError>(_onTriggerEmailError);
   }
 
   void _onSignupFormSubmitted(
@@ -56,10 +56,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     }
   }
 
-  void _onTriggerSignupFailure(
-    TriggerSignupFailure event,
+  void _onTriggerEmailError(
+    TriggerEmailError event,
     Emitter<SignupState> emit,
   ) {
-    emit(SignupFailure(errorMessage: event.errorMessage));
+    emit(SignupFailure(emailDuplicateError: event.errorMessage));
   }
 }

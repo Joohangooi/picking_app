@@ -18,7 +18,7 @@ class SignupFailure extends SignupState {
   final String? phoneNum;
   final String? address;
   final String? company;
-  final String? errorMessage;
+  final String? emailDuplicateError;
 
   const SignupFailure(
       {this.name,
@@ -27,7 +27,7 @@ class SignupFailure extends SignupState {
       this.phoneNum,
       this.address,
       this.company,
-      this.errorMessage});
+      this.emailDuplicateError});
 
   @override
   List<Object> get props => [
