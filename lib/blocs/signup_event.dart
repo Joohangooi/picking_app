@@ -27,3 +27,12 @@ class SignupFormSubmitted extends SignupEvent {
   @override
   List<Object> get props => [name, email, password, phoneNum, address, company];
 }
+
+class TriggerSignupFailure extends SignupEvent {
+  final String errorMessage;
+
+  const TriggerSignupFailure(this.errorMessage);
+
+  @override
+  List<Object> get props => [errorMessage];
+}

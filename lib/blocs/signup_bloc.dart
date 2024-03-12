@@ -1,3 +1,5 @@
+// signup_bloc.dart
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -7,6 +9,7 @@ part 'signup_state.dart';
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   SignupBloc() : super(SignupInitial()) {
     on<SignupFormSubmitted>(_onSignupFormSubmitted);
+    on<TriggerSignupFailure>(_onTriggerSignupFailure);
   }
 
   void _onSignupFormSubmitted(
@@ -51,5 +54,12 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         company: isCompanyValid ? null : 'Please enter your company name',
       ));
     }
+  }
+
+  void _onTriggerSignupFailure(
+    TriggerSignupFailure event,
+    Emitter<SignupState> emit,
+  ) {
+    emit(SignupFailure(errorMessage: event.errorMessage));
   }
 }

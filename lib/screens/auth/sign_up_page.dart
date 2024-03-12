@@ -5,7 +5,7 @@ import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/services/AuthService.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   State<SignupPage> createState() => _SignupPageState();
@@ -75,7 +75,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: BlocListener<SignupBloc, SignupState>(
                     listener: (context, state) async {
                       if (state is SignupSuccess) {
-                        // Handle signup success
+                        print("Successful signup!");
                         try {
                           final authService = AuthService();
                           final response = await authService.registerUser(
@@ -104,6 +104,8 @@ class _SignupPageState extends State<SignupPage> {
                                 backgroundColor: Colors.red,
                               ),
                             );
+                            _signupBloc.add(const TriggerSignupFailure(
+                                "Email Address Existance!"));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -116,7 +118,7 @@ class _SignupPageState extends State<SignupPage> {
                           print(e.toString());
                         } finally {}
                       } else if (state is SignupFailure) {
-                        // Handle signup failure
+                        print("Failed signup!");
                       }
                     },
                     child: Form(
