@@ -92,6 +92,7 @@ class _SignupPageState extends State<SignupPage> {
                                 backgroundColor: Colors.green,
                               ),
                             );
+                            Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
