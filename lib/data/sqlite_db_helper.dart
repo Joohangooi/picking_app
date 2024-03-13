@@ -137,9 +137,23 @@ class SqliteDbHelper {
     });
   }
 
-  Future<void> deleteAllPickingRecords() async {
+  static Future<bool> deleteAllPickingRecords() async {
+    try {
+      final db = await database;
+      await db.delete('picking_detail_table');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<int> deleteCompletedRecords() async {
     final db = await database;
-    await db.delete('picking_detail_table');
+    return await db.delete(
+      'picking_detail_table',
+      where: 'option = ?',
+      whereArgs: ['c'],
+    );
   }
 
   static Future<List<Map<String, dynamic>>> getLatestData(

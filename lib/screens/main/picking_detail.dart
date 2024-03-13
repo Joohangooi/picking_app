@@ -56,7 +56,6 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
   void filterPickingData(String query) {
     setState(() {
       if (query.isEmpty) {
-        print("Empty query here");
         filteredPickingData = List.from(pickingDetailData);
       } else {
         filteredPickingData = pickingDetailData
@@ -81,7 +80,7 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget company_logos = const Image(
+    Widget companyLogos = const Image(
       width: 120,
       height: 120,
       image:
@@ -225,7 +224,7 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: company_logos,
+                    child: companyLogos,
                   ),
                 ],
               ),

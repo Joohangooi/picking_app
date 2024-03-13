@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
+import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 
 class LocalPickingDetail extends StatefulWidget {
@@ -137,17 +138,88 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                       title: const Text('Sync Options'),
                       actions: <Widget>[
                         TextButton(
-                          onPressed: () {
-                            // Upload only complete items
-                            // uploadItems(isComplete: true);
+                          onPressed: () async {
+                            try {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              print(pickingDetailData);
+                              int statusCode = await PickingService()
+                                  .updatePickingDetail(pickingDetailData);
+                              int isDeleted =
+                                  await SqliteDbHelper.deleteCompletedRecords();
+                              if (statusCode == 200 && isDeleted > 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Picking details updated successfully.'),
+                                  ),
+                                );
+                                fetchPickingDataFromLocalDb();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('No order to upload!'),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              // Exception: Error encountered
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error: $e'),
+                                ),
+                              );
+                              print(e.toString());
+                            } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+
                             Navigator.of(context).pop();
                           },
                           child: const Text('Upload Only Completed Order'),
                         ),
                         TextButton(
-                          onPressed: () {
-                            // Upload all items
-                            // uploadItems(isComplete: false);
+                          onPressed: () async {
+                            try {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              print(pickingDetailData);
+                              int statusCode = await PickingService()
+                                  .updatePickingDetail(pickingDetailData);
+                              bool isDeleted = await SqliteDbHelper
+                                  .deleteAllPickingRecords();
+                              if (statusCode == 200 && isDeleted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Picking details updated successfully.'),
+                                  ),
+                                );
+                                fetchPickingDataFromLocalDb();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Update Failed!'),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              // Exception: Error encountered
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error: $e'),
+                                ),
+                              );
+                              print(e.toString());
+                            } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
                             Navigator.of(context).pop();
                           },
                           child: const Text('Upload All'),
