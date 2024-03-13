@@ -3,17 +3,20 @@ import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
+import 'package:picking_app/widgets/search_bar_widget.dart';
 
 class LocalPickingDetail extends StatefulWidget {
   final VoidCallback refreshCallback;
-  const LocalPickingDetail({Key? key, required this.refreshCallback})
-      : super(key: key);
+  const LocalPickingDetail({super.key, required this.refreshCallback});
   @override
   _LocalPickingState createState() => _LocalPickingState();
 }
 
 class _LocalPickingState extends State<LocalPickingDetail> {
+  TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> pickingDetailData = [];
+  List<Map<String, dynamic>> filteredPickingData = [];
+
   bool isLoading = false;
 
   @override
@@ -28,6 +31,7 @@ class _LocalPickingState extends State<LocalPickingDetail> {
     setState(() {
       pickingDetailData =
           pickingRecords.map((record) => record.toJson()).toList();
+      filteredPickingData = List.from(pickingDetailData);
     });
   }
 
@@ -56,12 +60,33 @@ class _LocalPickingState extends State<LocalPickingDetail> {
 
   @override
   Widget build(BuildContext context) {
-    Widget company_logos = const Image(
+    Widget companyLogos = const Image(
       width: 120,
       height: 120,
       image:
           AssetImage('assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'),
     );
+
+    void filterPickingData(String query) {
+      setState(() {
+        filteredPickingData = pickingDetailData
+            .where((item) =>
+                item['documentNo']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['customerName']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ('Zone ${item['zone']}'
+                    .toLowerCase()
+                    .contains(query.toLowerCase())) ||
+                item['location'].toLowerCase().contains(query.toLowerCase()) ||
+                item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
+    }
 
     return Scaffold(
       body: Stack(
@@ -74,13 +99,22 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                   )
                 : ListView(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: SearchBarWidget(
+                          controller: searchController,
+                          onChanged: (value) {
+                            filterPickingData(value);
+                          },
+                        ),
+                      ),
                       // Use ListView.builder to create cards from fetched data
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: pickingDetailData.length,
+                        itemCount: filteredPickingData.length,
                         itemBuilder: (context, index) {
-                          final data = pickingDetailData[index];
+                          final data = filteredPickingData[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: Container(
@@ -140,7 +174,7 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                       const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: company_logos,
+                        child: companyLogos,
                       ),
                     ],
                   ),
@@ -163,7 +197,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                               setState(() {
                                 isLoading = true;
                               });
-                              print(pickingDetailData);
                               int statusCode = await PickingService()
                                   .updatePickingDetail(pickingDetailData);
                               int isDeleted =
@@ -192,7 +225,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                   content: Text('Error: $e'),
                                 ),
                               );
-                              print(e.toString());
                             } finally {
                               setState(() {
                                 isLoading = false;
@@ -241,7 +273,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                     content: Text('Error: $e'),
                                   ),
                                 );
-                                print(e.toString());
                               } finally {
                                 setState(() {
                                   isLoading = false;
