@@ -25,13 +25,38 @@ class _LocalPickingState extends State<LocalPickingDetail> {
     fetchPickingDataFromLocalDb();
   }
 
-  Future<void> fetchPickingDataFromLocalDb() async {
+  Future<void> fetchPickingDataFromLocalDb({String searchQuery = ''}) async {
     final pickingRecords = await SqliteDbHelper.getAllRecords();
 
     setState(() {
       pickingDetailData =
           pickingRecords.map((record) => record.toJson()).toList();
-      filteredPickingData = List.from(pickingDetailData);
+      if (searchQuery.isNotEmpty) {
+        filterPickingData(searchQuery);
+      } else {
+        filteredPickingData = List.from(pickingDetailData);
+      }
+    });
+  }
+
+  void filterPickingData(String query) {
+    setState(() {
+      filteredPickingData = pickingDetailData
+          .where((item) =>
+              item['documentNo']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['customerName']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              ('Zone ${item['zone']}'
+                  .toLowerCase()
+                  .contains(query.toLowerCase())) ||
+              item['location'].toLowerCase().contains(query.toLowerCase()) ||
+              item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
   }
 
@@ -66,27 +91,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
       image:
           AssetImage('assets/company_logos/GBS_Logo_220pxby220px_300dpi.png'),
     );
-
-    void filterPickingData(String query) {
-      setState(() {
-        filteredPickingData = pickingDetailData
-            .where((item) =>
-                item['documentNo']
-                    .toString()
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) ||
-                item['customerName']
-                    .toString()
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) ||
-                ('Zone ${item['zone']}'
-                    .toLowerCase()
-                    .contains(query.toLowerCase())) ||
-                item['location'].toLowerCase().contains(query.toLowerCase()) ||
-                item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      });
-    }
 
     return Scaffold(
       body: Stack(
@@ -158,8 +162,10 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                           builder: (context) =>
                                               PickingDetailEdit(
                                             pickingData: data,
-                                            onSuccess:
-                                                fetchPickingDataFromLocalDb,
+                                            onSuccess: () =>
+                                                fetchPickingDataFromLocalDb(
+                                                    searchQuery:
+                                                        searchController.text),
                                           ),
                                         ),
                                       );
