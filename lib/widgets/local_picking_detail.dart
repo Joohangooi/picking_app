@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 
 class LocalPickingDetail extends StatefulWidget {
@@ -16,7 +17,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
   @override
   void initState() {
     super.initState();
-    // Call the API when the page loads
     fetchPickingDataFromLocalDb();
   }
 
@@ -91,15 +91,15 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                               actionButton: IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => PickingDetailEdit(
-                                  //       pickingData: data,
-                                  //       onSuccess: fetchLatestData,
-                                  //     ),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PickingDetailEdit(
+                                        pickingData: data,
+                                        onSuccess: fetchPickingDataFromLocalDb,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
 
