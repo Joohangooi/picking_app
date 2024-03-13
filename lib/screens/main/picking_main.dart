@@ -30,6 +30,10 @@ class _PickingMainPageState extends State<PickingMainPage> {
     fetchPickingData();
   }
 
+  void refreshPickingData() {
+    fetchPickingData();
+  }
+
   Future<void> fetchPickingData() async {
     try {
       setState(() {
@@ -453,7 +457,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                               ),
                             ),
                           ),
-                          const LocalPickingDetail(),
+                        LocalPickingDetail(refreshCallback: refreshPickingData),
                         ],
                       ),
                     ),

@@ -5,8 +5,9 @@ import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 
 class LocalPickingDetail extends StatefulWidget {
-  const LocalPickingDetail({Key? key}) : super(key: key);
-
+  final VoidCallback refreshCallback;
+  const LocalPickingDetail({Key? key, required this.refreshCallback})
+      : super(key: key);
   @override
   _LocalPickingState createState() => _LocalPickingState();
 }
@@ -28,6 +29,29 @@ class _LocalPickingState extends State<LocalPickingDetail> {
       pickingDetailData =
           pickingRecords.map((record) => record.toJson()).toList();
     });
+  }
+
+  Future<bool> showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Upload All'),
+          content: const Text(
+              'Are you sure you want to upload all picking details?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -107,10 +131,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                       );
                                     },
                                   ),
-
-                                  onTap: () {
-                                    print('Card tapped: ${data['documentNo']}');
-                                  },
                                 ),
                               ),
                             ),
@@ -156,6 +176,8 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                   ),
                                 );
                                 fetchPickingDataFromLocalDb();
+                                // Call the refresh callback
+                                widget.refreshCallback();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -183,42 +205,48 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                         ),
                         TextButton(
                           onPressed: () async {
-                            try {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              print(pickingDetailData);
-                              int statusCode = await PickingService()
-                                  .updatePickingDetail(pickingDetailData);
-                              bool isDeleted = await SqliteDbHelper
-                                  .deleteAllPickingRecords();
-                              if (statusCode == 200 && isDeleted) {
+                            bool shouldUploadAll =
+                                await showConfirmationDialog(context);
+                            if (shouldUploadAll) {
+                              try {
+                                setState(() {
+                                  isLoading = true;
+                                });
+
+                                int statusCode = await PickingService()
+                                    .updatePickingDetail(pickingDetailData);
+                                bool isDeleted = await SqliteDbHelper
+                                    .deleteAllPickingRecords();
+                                if (statusCode == 200 && isDeleted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Picking details updated successfully.'),
+                                    ),
+                                  );
+                                  fetchPickingDataFromLocalDb();
+                                  // Call the refresh callback
+                                  widget.refreshCallback();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Update Failed!'),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                // Exception: Error encountered
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Picking details updated successfully.'),
+                                  SnackBar(
+                                    content: Text('Error: $e'),
                                   ),
                                 );
-                                fetchPickingDataFromLocalDb();
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Update Failed!'),
-                                  ),
-                                );
+                                print(e.toString());
+                              } finally {
+                                setState(() {
+                                  isLoading = false;
+                                });
                               }
-                            } catch (e) {
-                              // Exception: Error encountered
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error: $e'),
-                                ),
-                              );
-                              print(e.toString());
-                            } finally {
-                              setState(() {
-                                isLoading = false;
-                              });
                             }
                             Navigator.of(context).pop();
                           },
