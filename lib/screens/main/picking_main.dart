@@ -170,7 +170,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
         );
       }
     } catch (e) {
-      print(e);
       // Handle API call error
       showDialog(
         // ignore: use_build_context_synchronously
