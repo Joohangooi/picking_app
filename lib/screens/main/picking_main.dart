@@ -145,9 +145,19 @@ class _PickingMainPageState extends State<PickingMainPage> {
         );
       } else {
         for (var item in pickingDetail) {
+          // Insert the data into the local database one by one
           final pickingModel = PickingModel.fromJson(item);
           await SqliteDbHelper.insertData(pickingModel);
         }
+        // casting the pickingDetail to Map<String, dynamic>
+        final typedPickingDetail = pickingDetail.cast<Map<String, dynamic>>();
+        typedPickingDetail[0]['option'] = 't';
+        var update =
+            await PickingService().updatePickingDetail(typedPickingDetail);
+        if (update == 200) {
+          fetchPickingData();
+        }
+
         pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
         Navigator.of(context).pop();
         Navigator.push(
@@ -160,6 +170,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
         );
       }
     } catch (e) {
+      print(e);
       // Handle API call error
       showDialog(
         // ignore: use_build_context_synchronously
@@ -217,7 +228,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget company_logos = const Image(
+    Widget companyLogos = const Image(
       width: 100,
       height: 100,
       image:
@@ -329,9 +340,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text(
+                                                        title: const Text(
                                                             'Confirm Deletion'),
-                                                        content: Text(
+                                                        content: const Text(
                                                             'Are you sure you want to delete this record?'),
                                                         actions: [
                                                           TextButton(
@@ -339,8 +350,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                                               Navigator.pop(
                                                                   context); // Close the dialog
                                                             },
-                                                            child:
-                                                                Text('Cancel'),
+                                                            child: const Text(
+                                                                'Cancel'),
                                                           ),
                                                           TextButton(
                                                             onPressed:
@@ -384,8 +395,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                                                     context); // Close the dialog
                                                               }
                                                             },
-                                                            child:
-                                                                Text('Confirm'),
+                                                            child: const Text(
+                                                                'Confirm'),
                                                           ),
                                                         ],
                                                       );
@@ -437,7 +448,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10.0),
-                                    child: company_logos,
+                                    child: companyLogos,
                                   ),
                                 ],
                               ),
