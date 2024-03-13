@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
+import 'package:picking_app/widgets/loading_overlay.dart';
 
 class PickingDetailEdit extends StatefulWidget {
   final Map<String, dynamic> pickingData;
@@ -276,26 +277,24 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
     );
 
     return Scaffold(
-      appBar: AppBarWidget(
-        title: '${widget.pickingData['stock']}',
-      ),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                  child: Column(
-                children: [
-                  pickingInfo,
-                  const SizedBox(height: 16.0),
-                  inputField,
-                  const SizedBox(height: 16.0),
-                  saveButton,
-                ],
-              )),
-            ),
-    );
+        appBar: AppBarWidget(
+          title: '${widget.pickingData['stock']}',
+        ),
+        body: LoadingOverlay(
+          isLoading: isLoading,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+                child: Column(
+              children: [
+                pickingInfo,
+                const SizedBox(height: 16.0),
+                inputField,
+                const SizedBox(height: 16.0),
+                saveButton,
+              ],
+            )),
+          ),
+        ));
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picking_app/blocs/signup_bloc.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/services/AuthService.dart';
+import 'package:picking_app/widgets/loading_overlay.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class _SignupPageState extends State<SignupPage> {
   final _phoneNumController = TextEditingController();
   final _addressController = TextEditingController();
   final _companyController = TextEditingController();
+  bool isLoading = false;
 
   late SignupBloc _signupBloc;
 
@@ -48,10 +50,12 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BlocProvider(
-        create: (_) => _signupBloc,
-        child: Scaffold(
-          body: Stack(
+        home: BlocProvider(
+      create: (_) => _signupBloc,
+      child: Scaffold(
+        body: LoadingOverlay(
+          isLoading: isLoading,
+          child: Stack(
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -75,8 +79,8 @@ class _SignupPageState extends State<SignupPage> {
                   child: BlocListener<SignupBloc, SignupState>(
                     listener: (context, state) async {
                       if (state is SignupSuccess) {
-                        print("Successful signup!");
                         try {
+                          isLoading = true;
                           final authService = AuthService();
                           final response = await authService.registerUser(
                               _nameController.text,
@@ -115,12 +119,10 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             );
                           }
-                        } catch (e) {
-                          print(e.toString());
-                        } finally {}
-                      } else if (state is SignupFailure) {
-                        print("Failed signup!");
-                      }
+                        } finally {
+                          isLoading = false;
+                        }
+                      } else if (state is SignupFailure) {}
                     },
                     child: Form(
                       key: _formKey,
@@ -365,6 +367,6 @@ class _SignupPageState extends State<SignupPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

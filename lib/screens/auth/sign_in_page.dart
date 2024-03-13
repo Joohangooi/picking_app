@@ -3,6 +3,7 @@ import 'package:picking_app/screens/auth/sign_up_page.dart';
 import 'package:picking_app/services/AuthService.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/screens/main/picking_main.dart';
+import 'package:picking_app/widgets/loading_overlay.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,45 +18,47 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: const AssetImage(
-                    "assets/background_imgs/picking-bg-1.jpeg"),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.white.withOpacity(0.65),
-                  BlendMode.lighten,
+        resizeToAvoidBottomInset: false,
+        body: LoadingOverlay(
+          isLoading: isLoading,
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: const AssetImage(
+                        "assets/background_imgs/picking-bg-1.jpeg"),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.white.withOpacity(0.65),
+                      BlendMode.lighten,
+                    ),
+                    repeat: ImageRepeat.noRepeat,
+                  ),
                 ),
-                repeat: ImageRepeat.noRepeat,
               ),
-            ),
-          ),
-          SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  _logo,
-                  const SizedBox(height: 20),
-                  _header(context),
-                  const SizedBox(height: 40),
-                  _inputField(context),
-                  const SizedBox(height: 40),
-                  _forgotPassword(context),
-                  const SizedBox(height: 40),
-                  _signup(context),
-                ],
+              SingleChildScrollView(
+                child: Container(
+                  margin: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      _logo,
+                      const SizedBox(height: 20),
+                      _header(context),
+                      const SizedBox(height: 40),
+                      _inputField(context),
+                      const SizedBox(height: 40),
+                      _forgotPassword(context),
+                      const SizedBox(height: 40),
+                      _signup(context),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   _header(BuildContext context) {
