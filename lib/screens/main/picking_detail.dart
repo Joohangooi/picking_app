@@ -37,6 +37,13 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
     filteredPickingData = List.from(pickingDetailData);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    checkAndUpdateOptions();
+    widget.fetchPickingDataCallback();
+  }
+
   void fetchLatestData() async {
     try {
       setState(() {
@@ -79,6 +86,27 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
             .toList();
       }
     });
+  }
+
+  Future<void> checkAndUpdateOptions() async {
+    bool allOptionsAreC = true;
+
+    // Check if all options are 'c'
+    for (final data in filteredPickingData) {
+      if (data['option'] != 'c') {
+        allOptionsAreC = false;
+        break;
+      }
+    }
+
+    // If all options are 'c', update the option in SqliteMainDbHelper
+    if (allOptionsAreC) {
+      final documentNo = widget.pickingData.first.documentNo;
+      await SqliteMainDbHelper.updateDetail(documentNo, 'c');
+    } else {
+      final documentNo = widget.pickingData.first.documentNo;
+      await SqliteMainDbHelper.updateDetail(documentNo, 'p');
+    }
   }
 
   @override
@@ -208,10 +236,6 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                             );
                           },
                         ),
-
-                        onTap: () {
-                          print('Card tapped: ${data['documentNo']}');
-                        },
                       ),
                     ),
                   ),
