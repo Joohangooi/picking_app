@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen>
       // If token exists, navigate to the main page
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => PickingMainPage()),
+        MaterialPageRoute(builder: (context) => const PickingMainPage()),
       );
     } else {
       // If token doesn't exist, navigate to the welcome page

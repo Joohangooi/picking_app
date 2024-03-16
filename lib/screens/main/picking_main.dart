@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:picking_app/data/sqlite_db_helper.dart';
-import 'package:picking_app/data/models/picking_model.dart';
+import 'package:picking_app/data/models/picking_main_model.dart';
+import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
-import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/loading_overlay.dart';
+import 'package:picking_app/widgets/local_picking_main.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
 import 'package:picking_app/widgets/local_picking_detail.dart';
@@ -36,7 +36,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
       setState(() {
         isLoading = true;
       });
-      final result = await MainPickingService().getMainPickingData();
+      final result = await MainPickingService().getPickingMainByOption();
       setState(() {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
@@ -102,23 +102,9 @@ class _PickingMainPageState extends State<PickingMainPage> {
       setState(() {
         isLoading = true;
       });
-      var pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
-
-      if (pickingData.isNotEmpty) {
-        Navigator.of(context).pop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickingDetailPage(
-                pickingData: pickingData,
-                fetchPickingDataCallback: fetchPickingData),
-          ),
-        );
-        return;
-      }
-
+      // get data from database
       final pickingDetail =
-          await PickingService().getPickingDetailByDocumentNo(documentNo);
+          await MainPickingService().getPickingMainByDocumentNo(documentNo);
 
       // Handle the result from the API call
       if (pickingDetail is int && pickingDetail == 401) {
@@ -145,28 +131,22 @@ class _PickingMainPageState extends State<PickingMainPage> {
           },
         );
       } else {
-        for (var item in pickingDetail) {
-          // Insert the data into the local database one by one
-          final pickingModel = PickingModel.fromJson(item);
-          await SqliteDbHelper.insertData(pickingModel);
-        }
-        // casting the pickingDetail to Map<String, dynamic>
-        final typedPickingDetail = pickingDetail.cast<Map<String, dynamic>>();
-        typedPickingDetail[0]['option'] = 't';
+        // Insert the data into the local database one by one
+        final pickingModel = PickingMainModel.fromJson(pickingDetail);
+        pickingModel.option = 'p';
+        await SqliteMainDbHelper.insertData(pickingModel);
+        pickingDetail['option'] = 't';
         var update =
-            await PickingService().updatePickingDetail(typedPickingDetail);
+            await PickingService().updatePickingDetail([pickingDetail]);
         if (update == 200) {
           fetchPickingData();
         }
-
-        pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
+        // pickingData = await SqliteMainDbHelper.getDataByDocumentNo(documentNo);
         Navigator.of(context).pop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickingDetailPage(
-                pickingData: pickingData,
-                fetchPickingDataCallback: fetchPickingData),
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Picking confirmed!'),
+            backgroundColor: Colors.green,
           ),
         );
       }
@@ -255,13 +235,14 @@ class _PickingMainPageState extends State<PickingMainPage> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: DefaultTabController(
-              length: 2, // Number of tabs
+              length: 3, // Number of tabs
               child: Column(
                 children: [
                   const TabBar(
                     tabs: [
-                      Tab(text: 'Main'),
-                      Tab(text: 'Local Data'),
+                      Tab(text: 'New'),
+                      Tab(text: 'Picking'),
+                      Tab(text: 'Picking List'),
                     ],
                   ),
                   Expanded(
@@ -448,6 +429,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                             ),
                           ),
                         ),
+                        LocalPickingMain(refreshCallback: fetchPickingData),
                         LocalPickingDetail(refreshCallback: fetchPickingData),
                       ],
                     ),
