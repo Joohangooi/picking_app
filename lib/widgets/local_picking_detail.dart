@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
@@ -32,6 +33,7 @@ class _LocalPickingState extends State<LocalPickingDetail> {
     setState(() {
       pickingDetailData =
           pickingRecords.map((record) => record.toJson()).toList();
+
       if (searchQuery.isNotEmpty) {
         filterPickingData(searchQuery);
       } else {
@@ -158,10 +160,25 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                   MaterialPageRoute(
                                     builder: (context) => PickingDetailEdit(
                                       pickingData: data,
-                                      onSuccess: () =>
-                                          fetchPickingDataFromLocalDb(
-                                              searchQuery:
-                                                  searchController.text),
+                                      onSuccess: () async {
+                                        fetchPickingDataFromLocalDb(
+                                            searchQuery: searchController.text);
+
+                                        // Fetch all records with the same documentNo
+                                        final records = await SqliteDbHelper
+                                            .getDataByDocumentNo(
+                                                data['documentNo']);
+
+                                        // Check if all options are 'c'
+                                        final allOptionsAreC = records.every(
+                                            (record) => record.option == 'c');
+
+                                        if (allOptionsAreC) {
+                                          // Update the option field in SqliteMainDbHelper
+                                          await SqliteMainDbHelper.updateDetail(
+                                              data['documentNo'], 'c');
+                                        }
+                                      },
                                     ),
                                   ),
                                 );

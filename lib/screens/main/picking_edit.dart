@@ -257,6 +257,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                   backgroundColor: Colors.green,
                 ),
               );
+              // 
               widget.onSuccess();
               Navigator.pop(context);
             }
