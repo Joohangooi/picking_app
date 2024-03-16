@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_main_model.dart';
+import 'package:picking_app/data/models/picking_model.dart';
+import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/services/jwt_service.dart';
@@ -135,6 +137,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
         final pickingModel = PickingMainModel.fromJson(pickingDetail);
         pickingModel.option = 'p';
         await SqliteMainDbHelper.insertData(pickingModel);
+        // insert picking list
+        await handlePickingDetail(documentNo);
         // update database
         pickingDetail['option'] = 't';
         var update =
@@ -173,6 +177,52 @@ class _PickingMainPageState extends State<PickingMainPage> {
           );
         },
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> handlePickingDetail(String documentNo) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final pickingDetail =
+          await PickingService().getPickingDetailByDocumentNo(documentNo);
+
+      // Handle the result from the API call
+      if (pickingDetail is int && pickingDetail == 401) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Unauthorized'),
+              content: const Text(
+                  'You are not authorized to access this resource.\nPlease login again.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    await jwt_service().deleteToken();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        for (var item in pickingDetail) {
+          // Insert the data into the local database one by one
+          final pickingModel = PickingModel.fromJson(item);
+          await SqliteDbHelper.insertData(pickingModel);
+        }
+      }
     } finally {
       setState(() {
         isLoading = false;
