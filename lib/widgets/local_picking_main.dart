@@ -195,6 +195,10 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                                                 await SqliteMainDbHelper
                                                     .deleteRecord(
                                                         data['documentNo']);
+
+                                            await SqliteDbHelper
+                                                .deleteRecord(
+                                                    data['documentNo']);
                                             if (isDeleted) {
                                               final pickingDetail =
                                                   await MainPickingService()
@@ -205,6 +209,7 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                                                   await PickingService()
                                                       .updatePickingDetail(
                                                           [pickingDetail]);
+
                                               if (update != 200) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(

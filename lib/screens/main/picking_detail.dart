@@ -138,6 +138,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
               if (statusCode == 200) {
                 await SqliteMainDbHelper.deleteRecord(
                     widget.pickingData.first.documentNo);
+                await SqliteDbHelper.deleteRecord(
+                    widget.pickingData.first.documentNo);
 
                 widget.fetchPickingDataCallback();
 
