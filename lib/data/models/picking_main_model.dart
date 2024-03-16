@@ -23,15 +23,15 @@ class PickingMainModel {
 
   factory PickingMainModel.fromJson(Map<String, dynamic> json) {
     return PickingMainModel(
-      documentNo: json['documentNo'],
-      documentDate: DateTime.tryParse(json['documentDate']),
-      issueDate: DateTime.tryParse(json['issueDate']),
-      remarks: json['remarks'],
-      customerName: json['customerName'],
-      pickBy: json['pickBy'],
-      zone: json['zone'],
-      dateCompleted: DateTime.tryParse(json['dateCompleted']),
-      option: json['option'],
+      documentNo: json['documentNo'] ?? '',
+      documentDate: DateTime.tryParse(json['documentDate'] ?? ''),
+      issueDate: DateTime.tryParse(json['issueDate'] ?? ''),
+      remarks: json['remarks'] ?? '',
+      customerName: json['customerName'] ?? '',
+      pickBy: json['pickBy'] ?? '',
+      zone: json['zone'] ?? '',
+      dateCompleted: DateTime.tryParse(json['dateCompleted'] ?? ''),
+      option: json['option'] ?? '',
     );
   }
 

@@ -83,15 +83,21 @@ class SqliteMainDbHelper {
         await db.query('picking_main_table');
     return List.generate(maps.length, (i) {
       return PickingMainModel(
-        documentNo: maps[i]['documentNo'],
-        documentDate: DateTime.tryParse(maps[i]['documentDate']),
-        issueDate: DateTime.tryParse(maps[i]['issueDate']),
-        remarks: maps[i]['remarks'],
-        customerName: maps[i]['customerName'],
-        pickBy: maps[i]['pickBy'],
-        zone: maps[i]['zone'],
-        dateCompleted: DateTime.tryParse(maps[i]['dateCompleted']),
-        option: maps[i]['option'],
+        documentNo: maps[i]['documentNo'] ?? '',
+        documentDate: maps[i]['documentDate'] == null
+            ? null
+            : DateTime.tryParse(maps[i]['documentDate']),
+        issueDate: maps[i]['issueDate'] == null
+            ? null
+            : DateTime.tryParse(maps[i]['issueDate']),
+        remarks: maps[i]['remarks'] ?? '',
+        customerName: maps[i]['customerName'] ?? '',
+        pickBy: maps[i]['pickBy'] ?? '',
+        zone: maps[i]['zone'] ?? '',
+        dateCompleted: maps[i]['dateCompleted'] == null
+            ? null
+            : DateTime.tryParse(maps[i]['dateCompleted']),
+        option: maps[i]['option'] ?? '',
       );
     });
   }
