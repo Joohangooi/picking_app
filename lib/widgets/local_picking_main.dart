@@ -5,6 +5,7 @@ import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/jwt_service.dart';
+import 'package:picking_app/services/main_picking_service.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/loading_overlay.dart';
@@ -222,23 +223,75 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                             zone: data['zone'],
                             date: data['documentDate'],
                             option: data['option'],
-                            // actionButton: IconButton(
-                            //   icon: const Icon(Icons.edit),
-                            //   onPressed: () {
-                            //     Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //         builder: (context) => PickingDetailEdit(
-                            //           pickingData: data,
-                            //           onSuccess: () =>
-                            //               fetchPickingDataFromLocalDb(
-                            //                   searchQuery:
-                            //                       searchController.text),
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            // ),
+                            actionButton: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirm Delete'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this picking detail?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            var isDeleted =
+                                                await SqliteMainDbHelper
+                                                    .deleteRecord(
+                                                        data['documentNo']);
+                                            if (isDeleted) {
+                                              final pickingDetail =
+                                                  await MainPickingService()
+                                                      .getPickingMainByDocumentNo(
+                                                          data['documentNo']);
+                                              pickingDetail['option'] = ' ';
+                                              int update =
+                                                  await PickingService()
+                                                      .updatePickingDetail(
+                                                          [pickingDetail]);
+                                              if (update != 200) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        'Failed to update picking detail'),
+                                                  ),
+                                                );
+                                              }
+                                              await fetchPickingDataFromLocalDb();
+                                              widget.refreshCallback();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Picking detail deleted successfully'),
+                                                ),
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Failed to delete picking detail'),
+                                                ),
+                                              );
+                                            }
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: const Text('Confirm'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                             onTap: () {
                               handlePickingOnTap(data['documentNo']);
                             },
