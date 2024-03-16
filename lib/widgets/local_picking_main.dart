@@ -4,7 +4,6 @@ import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/screens/main/picking_detail.dart';
-import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/services/jwt_service.dart';
 import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
@@ -51,8 +50,10 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
         isLoading = true;
       });
 
+      // check the existance of the data in the local database
       var pickingData = await SqliteDbHelper.getDataByDocumentNo(documentNo);
 
+      // if yes, then navigate to the detail page
       if (pickingData.isNotEmpty) {
         Navigator.push(
           context,

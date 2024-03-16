@@ -254,6 +254,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Picked quantity updated successfully'),
+                  backgroundColor: Colors.green,
                 ),
               );
               widget.onSuccess();

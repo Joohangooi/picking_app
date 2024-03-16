@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/card_widget.dart';
@@ -103,19 +105,21 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
               // Call the updatePickingDetail method and wait for the response
               int statusCode =
                   await PickingService().updatePickingDetail(pickingDetailData);
-              bool isDeleted = await SqliteDbHelper.deleteRecord(
-                  widget.pickingData.first.documentNo);
+
               // Handle the response
-              if (statusCode == 200 && isDeleted) {
+              if (statusCode == 200) {
+                await SqliteMainDbHelper.deleteRecord(
+                    widget.pickingData.first.documentNo);
+
                 widget.fetchPickingDataCallback();
 
                 // Success: Picking details updated successfully
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Picking details updated successfully.'),
+                    backgroundColor: Colors.green,
                   ),
                 );
-
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -125,7 +129,6 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                 );
               }
             } catch (e) {
-              // Exception: Error encountered
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Error: $e'),

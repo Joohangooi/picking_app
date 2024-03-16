@@ -135,6 +135,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
         final pickingModel = PickingMainModel.fromJson(pickingDetail);
         pickingModel.option = 'p';
         await SqliteMainDbHelper.insertData(pickingModel);
+        // update database
         pickingDetail['option'] = 't';
         var update =
             await PickingService().updatePickingDetail([pickingDetail]);
