@@ -13,6 +13,8 @@ class CustomCard extends StatelessWidget {
   final String? binNo;
   final String? pickedQty;
   final String? option;
+  final String? issueBy;
+  final String? salesMan;
   final VoidCallback? onTap;
   final IconButton? actionButton;
   final ValueChanged<String>? onLongPress;
@@ -29,10 +31,12 @@ class CustomCard extends StatelessWidget {
     this.varianceQty,
     this.binNo,
     this.pickedQty,
+    this.issueBy,
+    this.salesMan,
     this.option,
     this.onTap,
     this.actionButton,
-    this.onLongPress, 
+    this.onLongPress,
     Key? key,
   }) : super(key: key);
 
@@ -122,6 +126,12 @@ class CustomCard extends StatelessWidget {
                             if (binNo != null)
                               Text('Bin: ${binNo!}',
                                   style: const TextStyle(fontSize: 15)),
+                            if (issueBy != null && issueBy != "")
+                              Text('Issue By: $issueBy',
+                                  style: const TextStyle(fontSize: 13.5)),
+                            if (salesMan != null && salesMan != "")
+                              Text('Salesman: $salesMan',
+                                  style: const TextStyle(fontSize: 13.5)),
                           ],
                         ),
                       ),
