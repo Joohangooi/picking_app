@@ -92,29 +92,6 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
     });
   }
 
-  Future<bool> showConfirmationDialog(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Upload All'),
-          content: const Text(
-              'Are you sure you want to upload all picking details?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget companyLogos = const Image(
@@ -274,126 +251,152 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text('Sync Options'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            try {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              List<Map<String, dynamic>> completedOrders =
-                                  pickingDetailData
-                                      .where((item) => item['option'] == 'c')
-                                      .toList();
+                        title: const Text('Sync Options'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    try {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      List<Map<String, dynamic>>
+                                          completedOrders = pickingDetailData
+                                              .where((item) =>
+                                                  item['option'] == 'c')
+                                              .toList();
 
-                              // Check if there are any completed orders
-                              if (completedOrders.isNotEmpty) {
-                                List completedDocumentNos = completedOrders
-                                    .map((order) => order['documentNo'])
-                                    .toList();
+                                      // Check if there are any completed orders
+                                      if (completedOrders.isNotEmpty) {
+                                        List completedDocumentNos =
+                                            completedOrders
+                                                .map((order) =>
+                                                    order['documentNo'])
+                                                .toList();
 
-                                List<PickingModel> completedRecords = [];
+                                        List<PickingModel> completedRecords =
+                                            [];
 
-                                // store all the completed orders into completedRecords
-                                for (var record in completedDocumentNos) {
-                                  List<PickingModel> records =
-                                      await SqliteDbHelper.getDataByDocumentNo(
-                                          record);
-                                  completedRecords.addAll(records);
-                                }
+                                        // store all the completed orders into completedRecords
+                                        for (var record
+                                            in completedDocumentNos) {
+                                          List<PickingModel> records =
+                                              await SqliteDbHelper
+                                                  .getDataByDocumentNo(record);
+                                          completedRecords.addAll(records);
+                                        }
 
-                                // convert into json format to send to the server
-                                List<Map<String, dynamic>>
-                                    completedRecordsMaps = completedRecords
-                                        .map((record) => record.toJson())
-                                        .toList();
+                                        // convert into json format to send to the server
+                                        List<Map<String, dynamic>>
+                                            completedRecordsMaps =
+                                            completedRecords
+                                                .map(
+                                                    (record) => record.toJson())
+                                                .toList();
 
-                                int statusCode = await PickingService()
-                                    .updatePickingDetail(completedRecordsMaps);
+                                        int statusCode = await PickingService()
+                                            .updatePickingDetail(
+                                                completedRecordsMaps);
 
-                                if (statusCode == 200) {
-                                  // Server update successful
-                                  // Proceed to delete local database records
+                                        if (statusCode == 200) {
+                                          // Server update successful
+                                          // Proceed to delete local database records
 
-                                  int isDeletedDetail = await SqliteDbHelper
-                                      .deleteCompletedRecords();
-                                  if (isDeletedDetail > 0) {
-                                    // Local detail database records deleted successfully
-                                    // Proceed to delete local main database records
-                                    int isDeletedMain = await SqliteMainDbHelper
-                                        .deleteCompletedRecords();
-                                    if (isDeletedMain > 0) {
-                                      // Local main database records deleted successfully
+                                          int isDeletedDetail =
+                                              await SqliteDbHelper
+                                                  .deleteCompletedRecords();
+                                          if (isDeletedDetail > 0) {
+                                            // Local detail database records deleted successfully
+                                            // Proceed to delete local main database records
+                                            int isDeletedMain =
+                                                await SqliteMainDbHelper
+                                                    .deleteCompletedRecords();
+                                            if (isDeletedMain > 0) {
+                                              // Local main database records deleted successfully
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Picking details updated successfully.'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                              fetchPickingDataFromLocalDb();
+                                              // Call the refresh callback
+                                              widget.refreshCallback();
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Failed to delete completed records from local main database.'),
+                                                ),
+                                              );
+                                            }
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Failed to delete completed records from local detail database.'),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Failed to update picking details on server.'),
+                                            ),
+                                          );
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'No completed order to upload!'),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      print(e);
+                                      // Exception: Error encountered
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Picking details updated successfully.'),
-                                          backgroundColor: Colors.green,
+                                        SnackBar(
+                                          content: Text('Error: $e'),
                                         ),
                                       );
-                                      fetchPickingDataFromLocalDb();
-                                      // Call the refresh callback
-                                      widget.refreshCallback();
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Failed to delete completed records from local main database.'),
-                                        ),
-                                      );
+                                    } finally {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                     }
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Failed to delete completed records from local detail database.'),
-                                      ),
-                                    );
-                                  }
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Failed to update picking details on server.'),
-                                    ),
-                                  );
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('No completed order to upload!'),
-                                  ),
-                                );
-                              }
-                            } catch (e) {
-                              print(e);
-                              // Exception: Error encountered
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error: $e'),
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Upload Completed Order'),
                                 ),
-                              );
-                            } finally {
-                              setState(() {
-                                isLoading = false;
-                              });
-                            }
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Upload Completed Order'),
-                        ),
-                      ],
-                    );
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            )
+                          ],
+                        ));
                   },
                 );
               },
