@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';
 import 'package:picking_app/widgets/loading_overlay.dart';
 
@@ -43,6 +44,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
 
   @override
   void dispose() {
+    checkAndUpdateOptions();
     _pickedQtyController.dispose();
     super.dispose();
   }
@@ -317,5 +319,28 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             )),
           ),
         ));
+  }
+
+  Future<void> checkAndUpdateOptions() async {
+    bool allOptionsAreC = true;
+    List<PickingModel> pickingData = await SqliteDbHelper.getDataByDocumentNo(
+        widget.pickingData['documentNo']);
+
+    // Check if all options are 'c'
+    for (final data in pickingData) {
+      if (data.option != 'c') {
+        allOptionsAreC = false;
+        break;
+      }
+    }
+
+    // If all options are 'c', update the option in SqliteMainDbHelper
+    if (allOptionsAreC) {
+      await SqliteMainDbHelper.updateDetail(
+          widget.pickingData['documentNo'], 'c');
+    } else {
+      await SqliteMainDbHelper.updateDetail(
+          widget.pickingData['documentNo'], 'p');
+    }
   }
 }
