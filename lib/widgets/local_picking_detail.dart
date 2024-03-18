@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
@@ -184,6 +185,14 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                                 );
                               },
                             ),
+                            onLongPress: (requestQty) {
+                              updateLocalDatabase(
+                                data['documentNo'],
+                                data['line'],
+                                data['requestQty'],
+                                data['quantity'],
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -201,5 +210,85 @@ class _LocalPickingState extends State<LocalPickingDetail> {
         ],
       ),
     ));
+  }
+
+  Future<void> checkAndUpdateOptions(String documentNo) async {
+    bool allOptionsAreC = true;
+
+    List<PickingModel> pickingData =
+        await SqliteDbHelper.getDataByDocumentNo(documentNo);
+
+    // Check if all options are 'c'
+    for (final data in pickingData) {
+      if (data.option != 'c') {
+        allOptionsAreC = false;
+        break;
+      }
+    }
+
+    // If all options are 'c', update the option in SqliteMainDbHelper
+    if (allOptionsAreC) {
+      await SqliteMainDbHelper.updateDetail(documentNo, 'c');
+    } else {
+      await SqliteMainDbHelper.updateDetail(documentNo, 'p');
+    }
+  }
+
+  void updateLocalDatabase(
+      String documentNo, int line, double requestQty, double quantity) async {
+    try {
+      bool success = await SqliteDbHelper.updateDetail(
+        documentNo,
+        line,
+        requestQty,
+        0.0,
+      );
+
+      if (success) {
+        // Find the corresponding item in the pickingDetailData list
+        final index = pickingDetailData.indexWhere(
+            (item) => item['documentNo'] == documentNo && item['line'] == line);
+
+        if (index != -1) {
+          // Update the option and variance values
+          pickingDetailData[index]['option'] = 'c';
+          pickingDetailData[index]['quantity'] = requestQty;
+          pickingDetailData[index]['variance'] = requestQty - quantity;
+
+          // Update the filteredPickingData list
+          filteredPickingData = List.from(pickingDetailData);
+
+          setState(() {});
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Picked quantity updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          checkAndUpdateOptions(documentNo);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to find the item to update'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update picked quantity'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
+    }
   }
 }
