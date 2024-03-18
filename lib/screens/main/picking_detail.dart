@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
@@ -193,56 +192,63 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
               itemBuilder: (context, index) {
                 final data = filteredPickingData[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 15,
-                          offset: const Offset(0, 3),
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 15,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
                         ),
-                      ],
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1,
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: CustomCard(
-                        pickedNo: data['documentNo'],
-                        stockCode: data['stock'],
-                        stockDesc: data['description'],
-                        location: data['location'],
-                        zone: data['zone'],
-                        requestQty: data['requestQty'].toInt().toString(),
-                        varianceQty: (data['requestQty'] - data['quantity'])
-                            .toInt()
-                            .toString(),
-                        pickedQty: data['quantity'].toInt().toString(),
-                        binNo: data['binShelfNo'],
-                        // remarks: data['remarks'],
-                        option: data['option'],
-                        actionButton: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PickingDetailEdit(
-                                  pickingData: data,
-                                  onSuccess: fetchLatestData,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: CustomCard(
+                          pickedNo: data['documentNo'],
+                          stockCode: data['stock'],
+                          stockDesc: data['description'],
+                          location: data['location'],
+                          zone: data['zone'],
+                          requestQty: data['requestQty'].toInt().toString(),
+                          varianceQty: (data['requestQty'] - data['quantity'])
+                              .toInt()
+                              .toString(),
+                          pickedQty: data['quantity'].toInt().toString(),
+                          binNo: data['binShelfNo'],
+                          // remarks: data['remarks'],
+                          option: data['option'],
+                          actionButton: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PickingDetailEdit(
+                                    pickingData: data,
+                                    onSuccess: fetchLatestData,
+                                  ),
                                 ),
-                              ),
+                              );
+                            },
+                          ),
+                          onLongPress: (requestQty) {
+                            updateLocalDatabase(
+                              data['documentNo'],
+                              data['line'],
+                              data['requestQty'],
+                              data['quantity'],
                             );
                           },
                         ),
                       ),
-                    ),
-                  ),
-                );
+                    ));
               },
             ),
             const SizedBox(height: 10),
@@ -254,5 +260,62 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
         ),
       ),
     );
+  }
+
+  void updateLocalDatabase(
+      String documentNo, int line, double requestQty, double quantity) async {
+    try {
+      bool success = await SqliteDbHelper.updateDetail(
+        documentNo,
+        line,
+        requestQty,
+        0.0,
+      );
+
+      if (success) {
+        // Find the corresponding item in the pickingDetailData list
+        final index = pickingDetailData.indexWhere(
+            (item) => item['documentNo'] == documentNo && item['line'] == line);
+
+        if (index != -1) {
+          // Update the option and variance values
+          pickingDetailData[index]['option'] = 'c';
+          pickingDetailData[index]['quantity'] = requestQty;
+          pickingDetailData[index]['variance'] = requestQty - quantity;
+
+          // Update the filteredPickingData list
+          filteredPickingData = List.from(pickingDetailData);
+
+          setState(() {});
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Picked quantity updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to find the item to update'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update picked quantity'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
+    }
   }
 }

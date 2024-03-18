@@ -55,13 +55,12 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
       // if yes, then navigate to the detail page
       if (pickingData.isNotEmpty) {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickingDetailPage(
-                pickingData: pickingData,
-                fetchPickingDataCallback: fetchPickingDataFromLocalDb),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => PickingDetailPage(
+                  pickingData: pickingData,
+                  fetchPickingDataCallback: fetchPickingDataFromLocalDb),
+            ));
         return;
       }
     } finally {

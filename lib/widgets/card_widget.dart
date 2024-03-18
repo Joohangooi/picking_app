@@ -15,6 +15,7 @@ class CustomCard extends StatelessWidget {
   final String? option;
   final VoidCallback? onTap;
   final IconButton? actionButton;
+  final ValueChanged<String>? onLongPress;
 
   const CustomCard({
     this.date,
@@ -31,6 +32,7 @@ class CustomCard extends StatelessWidget {
     this.option,
     this.onTap,
     this.actionButton,
+    this.onLongPress, 
     Key? key,
   }) : super(key: key);
 
@@ -64,6 +66,11 @@ class CustomCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
+      onLongPress: () {
+        if (onLongPress != null && requestQty != null) {
+          onLongPress!(requestQty!);
+        }
+      },
       child: Card(
         child: Stack(
           children: [
