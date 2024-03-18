@@ -142,7 +142,7 @@ class CustomCard extends StatelessWidget {
                               Text('Variance Qty: ${varianceQty!}',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: (varianceQty != "0.0")
+                                    color: (varianceQty != "0")
                                         ? Colors.red
                                         : Colors.green[700],
                                   )),

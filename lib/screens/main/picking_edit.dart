@@ -23,10 +23,28 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
   @override
   void initState() {
     super.initState();
+    _pickedQtyController.addListener(() {
+      final text = _pickedQtyController.text;
+      if (text.isNotEmpty) {
+        // Remove any leading minus sign
+        if (text.startsWith('-')) {
+          _pickedQtyController.text = text.substring(1);
+          return;
+        }
+
+        // Remove any decimal point and characters after it
+        final index = text.indexOf('.');
+        if (index != -1) {
+          _pickedQtyController.text = text.substring(0, index);
+          return;
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _pickedQtyController.dispose();
     super.dispose();
   }
 
@@ -158,7 +176,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                   ),
                 ),
                 Text(
-                  pickingModel.requestQty.toString(),
+                  pickingModel.requestQty.toInt().toString(),
                   style: const TextStyle(
                       fontSize: 18.0, decoration: TextDecoration.underline),
                 ),
@@ -176,7 +194,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                   ),
                 ),
                 Text(
-                  pickingModel.quantity.toString(),
+                  pickingModel.quantity.toInt().toString(),
                   style: TextStyle(
                       fontSize: 16.0,
                       color: (pickingModel.requestQty != pickingModel.quantity)
@@ -204,8 +222,8 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('New Value Exceeded Error'),
-                content:
-                    Text('Quantity cannot exceed ${pickingModel.requestQty}.'),
+                content: Text(
+                    'Quantity cannot exceed ${pickingModel.requestQty.toInt()}'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -218,7 +236,8 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
             },
           );
           // Reset the input field to the maximum allowed quantity
-          _pickedQtyController.text = pickingModel.requestQty.toString();
+          _pickedQtyController.text =
+              pickingModel.requestQty.toInt().toString();
           // Move the cursor to the end of the text
           _pickedQtyController.selection = TextSelection.fromPosition(
             TextPosition(offset: _pickedQtyController.text.length),
@@ -227,8 +246,9 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
       },
       decoration: InputDecoration(
         labelText: 'Update Picked Quantity',
-        hintText:
-            widget.pickingData['quantity'].toString(), // Set hint text here
+        hintText: widget.pickingData['quantity']
+            .toInt()
+            .toString(), // Set hint text here
         border: const OutlineInputBorder(),
       ),
     );
@@ -257,7 +277,7 @@ class _PickingDetailEditState extends State<PickingDetailEdit> {
                   backgroundColor: Colors.green,
                 ),
               );
-              // 
+              //
               widget.onSuccess();
               Navigator.pop(context);
             }
