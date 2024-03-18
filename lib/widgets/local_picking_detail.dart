@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
-import 'package:picking_app/services/picking_service.dart';
 import 'package:picking_app/widgets/card_widget.dart';
 import 'package:picking_app/widgets/loading_overlay.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
@@ -145,10 +144,11 @@ class _LocalPickingState extends State<LocalPickingDetail> {
                             stockDesc: data['description'],
                             location: data['location'],
                             zone: data['zone'],
-                            requestQty: data['requestQty'].toString(),
+                            requestQty: data['requestQty'].toInt().toString(),
                             varianceQty: (data['requestQty'] - data['quantity'])
+                                .toInt()
                                 .toString(),
-                            pickedQty: data['quantity'].toString(),
+                            pickedQty: data['quantity'].toInt().toString(),
                             binNo: data['binShelfNo'],
                             // remarks: data['remarks'],
                             option: data['option'],
@@ -198,124 +198,6 @@ class _LocalPickingState extends State<LocalPickingDetail> {
               ],
             ),
           ),
-          // Positioned(
-          //   bottom: 20.0,
-          //   right: 20.0,
-          //   child: FloatingActionButton(
-          //     onPressed: () {
-          //       // Show dialog
-          //       showDialog(
-          //         context: context,
-          //         builder: (BuildContext context) {
-          //           return AlertDialog(
-          //             title: const Text('Sync Options'),
-          //             actions: <Widget>[
-          //               TextButton(
-          //                 onPressed: () async {
-          //                   try {
-          //                     setState(() {
-          //                       isLoading = true;
-          //                     });
-          //                     int statusCode = await PickingService()
-          //                         .updatePickingDetail(pickingDetailData);
-          //                     int isDeleted =
-          //                         await SqliteDbHelper.deleteCompletedRecords();
-          //                     if (statusCode == 200 && isDeleted > 0) {
-          //                       ScaffoldMessenger.of(context).showSnackBar(
-          //                         const SnackBar(
-          //                           content: Text(
-          //                               'Picking details updated successfully.'),
-          //                         ),
-          //                       );
-          //                       fetchPickingDataFromLocalDb();
-          //                       // Call the refresh callback
-          //                       widget.refreshCallback();
-          //                     } else {
-          //                       ScaffoldMessenger.of(context).showSnackBar(
-          //                         const SnackBar(
-          //                           content: Text('No order to upload!'),
-          //                         ),
-          //                       );
-          //                     }
-          //                   } catch (e) {
-          //                     // Exception: Error encountered
-          //                     ScaffoldMessenger.of(context).showSnackBar(
-          //                       SnackBar(
-          //                         content: Text('Error: $e'),
-          //                       ),
-          //                     );
-          //                   } finally {
-          //                     setState(() {
-          //                       isLoading = false;
-          //                     });
-          //                   }
-
-          //                   Navigator.of(context).pop();
-          //                 },
-          //                 child: const Text('Upload Only Completed Order'),
-          //               ),
-          //               TextButton(
-          //                 onPressed: () async {
-          //                   bool shouldUploadAll =
-          //                       await showConfirmationDialog(context);
-          //                   if (shouldUploadAll) {
-          //                     try {
-          //                       setState(() {
-          //                         isLoading = true;
-          //                       });
-
-          //                       int statusCode = await PickingService()
-          //                           .updatePickingDetail(pickingDetailData);
-          //                       bool isDeleted = await SqliteDbHelper
-          //                           .deleteAllPickingRecords();
-          //                       if (statusCode == 200 && isDeleted) {
-          //                         ScaffoldMessenger.of(context).showSnackBar(
-          //                           const SnackBar(
-          //                             content: Text(
-          //                                 'Picking details updated successfully.'),
-          //                           ),
-          //                         );
-          //                         fetchPickingDataFromLocalDb();
-          //                         // Call the refresh callback
-          //                         widget.refreshCallback();
-          //                       } else {
-          //                         ScaffoldMessenger.of(context).showSnackBar(
-          //                           const SnackBar(
-          //                             content: Text('Update Failed!'),
-          //                           ),
-          //                         );
-          //                       }
-          //                     } catch (e) {
-          //                       // Exception: Error encountered
-          //                       ScaffoldMessenger.of(context).showSnackBar(
-          //                         SnackBar(
-          //                           content: Text('Error: $e'),
-          //                         ),
-          //                       );
-          //                     } finally {
-          //                       setState(() {
-          //                         isLoading = false;
-          //                       });
-          //                     }
-          //                   }
-          //                   Navigator.of(context).pop();
-          //                 },
-          //                 child: const Text('Upload All'),
-          //               ),
-          //               TextButton(
-          //                 onPressed: () {
-          //                   Navigator.of(context).pop();
-          //                 },
-          //                 child: const Text('Cancel'),
-          //               ),
-          //             ],
-          //           );
-          //         },
-          //       );
-          //     },
-          //     child: const Icon(Icons.sync),
-          //   ),
-          // ),
         ],
       ),
     ));

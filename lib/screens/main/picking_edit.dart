@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:picking_app/data/models/picking_model.dart';
 import 'package:picking_app/data/sqlite_db_helper.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';

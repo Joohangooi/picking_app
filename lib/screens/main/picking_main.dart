@@ -43,6 +43,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
           filteredPickingData = List.from(pickingData);
+          print(filteredPickingData);
         } else if (result == 401) {
           showDialog(
             context: context,
@@ -286,7 +287,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: DefaultTabController(
-              length: 3, // Number of tabs
+              length: 3,
+              initialIndex: 1,
               child: Column(
                 children: [
                   const TabBar(

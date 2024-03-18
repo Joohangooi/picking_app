@@ -49,7 +49,6 @@ class SqliteDbHelper {
       String documentNo, int line, double newQuantity, double variance) async {
     try {
       final db = await database;
-      print(variance);
       final Map<String, dynamic> values = {
         'quantity': newQuantity,
         'option': variance == 0.0 ? 'c' : 'p',
