@@ -43,7 +43,6 @@ class _PickingMainPageState extends State<PickingMainPage> {
         if ((result != 401) && (result != null)) {
           pickingData = List<Map<String, dynamic>>.from(result);
           filteredPickingData = List.from(pickingData);
-          print(filteredPickingData);
         } else if (result == 401) {
           showDialog(
             context: context,
@@ -252,7 +251,15 @@ class _PickingMainPageState extends State<PickingMainPage> {
                 item['documentDate']
                     .toLowerCase()
                     .contains(query.toLowerCase()) ||
-                item['option'].toLowerCase().contains(query.toLowerCase()))
+                item['option'].toLowerCase().contains(query.toLowerCase()) ||
+                item['issueBy']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['salesman']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
             .toList();
       }
     });

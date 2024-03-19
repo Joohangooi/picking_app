@@ -12,6 +12,8 @@ class PickingModel {
   final String binShelfNo;
   final double quantity;
   final double requestQty;
+  final String? salesMan;
+  final String? issueBy;
   final int line;
 
   PickingModel({
@@ -28,6 +30,8 @@ class PickingModel {
     required this.binShelfNo,
     required this.quantity,
     required this.requestQty,
+    this.salesMan,
+    this.issueBy,
     required this.line,
   });
 
@@ -45,6 +49,8 @@ class PickingModel {
       description: json['description'] ?? '',
       stock: json['stock'] ?? '',
       requestQty: (json['requestQty'] ?? 0).toDouble(),
+      issueBy: json['issueBy'] ?? '',
+      salesMan: json['salesMan'] ?? '',
       pickedNo: json['pickedNo'] ?? '',
       line: json['line'] ?? 0,
     );
@@ -64,6 +70,8 @@ class PickingModel {
       'quantity': quantity,
       'binShelfNo': binShelfNo,
       'description': description,
+      'issueBy': issueBy,
+      'salesMan': salesMan,
       'requestQty': requestQty,
       'line': line,
     };
@@ -82,6 +90,8 @@ class PickingModel {
       'option': option,
       'quantity': quantity,
       'binShelfNo': binShelfNo,
+      'issueBy': issueBy,
+      'salesMan': salesMan,
       'description': description,
       'requestQty': requestQty,
       'line': line,

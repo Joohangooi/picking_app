@@ -28,6 +28,8 @@ class SqliteMainDbHelper {
             pickBy TEXT,
             zone TEXT,
             dateCompleted TEXT,
+            salesMan TEXT,
+            issueBy TEXT,
             option TEXT
           )
         ''');
@@ -93,6 +95,8 @@ class SqliteMainDbHelper {
         remarks: maps[i]['remarks'] ?? '',
         customerName: maps[i]['customerName'] ?? '',
         pickBy: maps[i]['pickBy'] ?? '',
+        issueBy: maps[i]['issueBy'] ?? '',
+        salesMan: maps[i]['salesMan'] ?? '',
         zone: maps[i]['zone'] ?? '',
         dateCompleted: maps[i]['dateCompleted'] == null
             ? null
@@ -120,6 +124,8 @@ class SqliteMainDbHelper {
         customerName: maps[i]['customerName'],
         pickBy: maps[i]['pickBy'],
         zone: maps[i]['zone'],
+        issueBy: maps[i]['issueBy'],
+        salesMan: maps[i]['salesMan'],
         dateCompleted: DateTime.tryParse(maps[i]['dateCompleted']),
         option: maps[i]['option'],
       );

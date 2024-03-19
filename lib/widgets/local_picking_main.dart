@@ -86,7 +86,15 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                   .toLowerCase()
                   .contains(query.toLowerCase())) ||
               item['location'].toLowerCase().contains(query.toLowerCase()) ||
-              item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
+              item['binShelfNo'].toLowerCase().contains(query.toLowerCase()) ||
+              item['issueBy']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['salesman']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -150,6 +158,8 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                             zone: data['zone'],
                             date: data['documentDate'],
                             option: data['option'],
+                            issueBy: data['issueBy'],
+                            salesMan: data['salesMan'],
                             actionButton: IconButton(
                               icon: const Icon(Icons.delete_outline),
                               onPressed: () {

@@ -52,7 +52,6 @@ class PickingService {
       );
 
       if (response.statusCode == 200) {
-        print('Picking details updated successfully.');
         return response.statusCode;
       } else {
         print(

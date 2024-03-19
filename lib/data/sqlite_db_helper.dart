@@ -31,6 +31,8 @@ class SqliteDbHelper {
             description TEXT,
             stock TEXT,
             location TEXT,
+            issueBy TEXT,
+            salesMan TEXT,
             binShelfNo TEXT,
             quantity REAL,
             requestQty REAL
@@ -97,6 +99,8 @@ class SqliteDbHelper {
         zone: maps[i]['zone'],
         remarks: maps[i]['remarks'],
         option: maps[i]['option'],
+        salesMan: maps[i]['salesMan'],
+        issueBy: maps[i]['issueBy'],
         description: maps[i]['description'],
         stock: maps[i]['stock'],
         location: maps[i]['location'],

@@ -7,6 +7,8 @@ class PickingMainModel {
   String? pickBy;
   String? zone;
   DateTime? dateCompleted;
+  String? issueBy;
+  String? salesMan;
   String? option;
 
   PickingMainModel({
@@ -17,6 +19,8 @@ class PickingMainModel {
     this.customerName,
     this.pickBy,
     this.zone,
+    this.issueBy,
+    this.salesMan,
     this.dateCompleted,
     this.option,
   });
@@ -30,6 +34,8 @@ class PickingMainModel {
       customerName: json['customerName'] ?? '',
       pickBy: json['pickBy'] ?? '',
       zone: json['zone'] ?? '',
+      issueBy: json['issueBy'] ?? '',
+      salesMan: json['salesMan'] ?? '',
       dateCompleted: DateTime.tryParse(json['dateCompleted'] ?? ''),
       option: json['option'] ?? '',
     );
@@ -44,6 +50,8 @@ class PickingMainModel {
       'customerName': customerName,
       'pickBy': pickBy,
       'zone': zone,
+      'issueBy': issueBy,
+      'salesMan': salesMan,
       'dateCompleted': dateCompleted?.toString(),
       'option': option,
     };

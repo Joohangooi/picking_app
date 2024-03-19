@@ -81,7 +81,17 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                     .toLowerCase()
                     .contains(query.toLowerCase())) ||
                 item['location'].toLowerCase().contains(query.toLowerCase()) ||
-                item['binShelfNo'].toLowerCase().contains(query.toLowerCase()))
+                item['binShelfNo']
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['issueBy']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['salesman']
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
             .toList();
       }
     });
@@ -216,6 +226,8 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                           stockDesc: data['description'],
                           location: data['location'],
                           zone: data['zone'],
+                          issueBy: data['issueBy'],
+                          salesMan: data['salesMan'],
                           requestQty: data['requestQty'].toInt().toString(),
                           varianceQty: (data['requestQty'] - data['quantity'])
                               .toInt()
