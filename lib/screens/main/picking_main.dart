@@ -369,80 +369,80 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                             zone: data['zone'],
                                             issueBy: data['issueBy'],
                                             salesMan: data['salesman'],
-                                            actionButton: IconButton(
-                                              icon: const Icon(
-                                                  Icons.delete_outline),
-                                              onPressed: () async {
-                                                // Show a dialog to confirm deletion
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: const Text(
-                                                          'Confirm Deletion'),
-                                                      content: const Text(
-                                                          'Are you sure you want to delete this record?'),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context); // Close the dialog
-                                                          },
-                                                          child: const Text(
-                                                              'Cancel'),
-                                                        ),
-                                                        TextButton(
-                                                          onPressed: () async {
-                                                            // Delete the record
-                                                            try {
-                                                              final pickingDetail =
-                                                                  await MainPickingService()
-                                                                      .deletePickingDetailByDocumentNo(
-                                                                          data[
-                                                                              'documentNo']);
+                                            // actionButton: IconButton(
+                                            //   icon: const Icon(
+                                            //       Icons.delete_outline),
+                                            //   onPressed: () async {
+                                            //     // Show a dialog to confirm deletion
+                                            //     showDialog(
+                                            //       context: context,
+                                            //       builder:
+                                            //           (BuildContext context) {
+                                            //         return AlertDialog(
+                                            //           title: const Text(
+                                            //               'Confirm Deletion'),
+                                            //           content: const Text(
+                                            //               'Are you sure you want to delete this record?'),
+                                            //           actions: [
+                                            //             TextButton(
+                                            //               onPressed: () {
+                                            //                 Navigator.pop(
+                                            //                     context); // Close the dialog
+                                            //               },
+                                            //               child: const Text(
+                                            //                   'Cancel'),
+                                            //             ),
+                                            //             TextButton(
+                                            //               onPressed: () async {
+                                            //                 // Delete the record
+                                            //                 try {
+                                            //                   final pickingDetail =
+                                            //                       await MainPickingService()
+                                            //                           .deletePickingDetailByDocumentNo(
+                                            //                               data[
+                                            //                                   'documentNo']);
 
-                                                              if (pickingDetail ==
-                                                                  200) {
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  const SnackBar(
-                                                                    content: Text(
-                                                                        'Record deleted!'),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .green,
-                                                                  ),
-                                                                );
-                                                                fetchPickingData();
-                                                              } else {
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  const SnackBar(
-                                                                    content: Text(
-                                                                        'Operation Failed!'),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .red,
-                                                                  ),
-                                                                );
-                                                              }
-                                                            } finally {
-                                                              Navigator.pop(
-                                                                  context); // Close the dialog
-                                                            }
-                                                          },
-                                                          child: const Text(
-                                                              'Confirm'),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            ),
+                                            //                   if (pickingDetail ==
+                                            //                       200) {
+                                            //                     ScaffoldMessenger.of(
+                                            //                             context)
+                                            //                         .showSnackBar(
+                                            //                       const SnackBar(
+                                            //                         content: Text(
+                                            //                             'Record deleted!'),
+                                            //                         backgroundColor:
+                                            //                             Colors
+                                            //                                 .green,
+                                            //                       ),
+                                            //                     );
+                                            //                     fetchPickingData();
+                                            //                   } else {
+                                            //                     ScaffoldMessenger.of(
+                                            //                             context)
+                                            //                         .showSnackBar(
+                                            //                       const SnackBar(
+                                            //                         content: Text(
+                                            //                             'Operation Failed!'),
+                                            //                         backgroundColor:
+                                            //                             Colors
+                                            //                                 .red,
+                                            //                       ),
+                                            //                     );
+                                            //                   }
+                                            //                 } finally {
+                                            //                   Navigator.pop(
+                                            //                       context); // Close the dialog
+                                            //                 }
+                                            //               },
+                                            //               child: const Text(
+                                            //                   'Confirm'),
+                                            //             ),
+                                            //           ],
+                                            //         );
+                                            //       },
+                                            //     );
+                                            //   },
+                                            // ),
                                             onTap: () {
                                               showDialog(
                                                 context: context,

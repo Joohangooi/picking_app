@@ -114,7 +114,7 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(0),
             child: ListView(
               children: [
                 Padding(
