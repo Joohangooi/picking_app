@@ -165,6 +165,7 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                             companyName: data['customerName'],
                             zone: data['zone'],
                             date: data['documentDate'],
+                            remarks: data['remarks'],
                             option: data['option'],
                             issueBy: data['issueBy'],
                             salesMan: data['salesMan'],

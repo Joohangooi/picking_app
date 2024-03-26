@@ -135,54 +135,54 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
         title: widget.pickingData.isNotEmpty
             ? widget.pickingData.first.customerName
             : 'Picking List',
-        actionButton: IconButton(
-          icon: const Icon(Icons.sync),
-          onPressed: () async {
-            try {
-              setState(() {
-                isLoading = true;
-              });
-              // Call the updatePickingDetail method and wait for the response
-              int statusCode =
-                  await PickingService().updatePickingDetail(pickingDetailData);
+        // actionButton: IconButton(
+        //   icon: const Icon(Icons.sync),
+        //   onPressed: () async {
+        //     try {
+        //       setState(() {
+        //         isLoading = true;
+        //       });
+        //       // Call the updatePickingDetail method and wait for the response
+        //       int statusCode =
+        //           await PickingService().updatePickingDetail(pickingDetailData);
 
-              // Handle the response
-              if (statusCode == 200) {
-                await SqliteMainDbHelper.deleteRecord(
-                    widget.pickingData.first.documentNo);
-                await SqliteDbHelper.deleteRecord(
-                    widget.pickingData.first.documentNo);
+        //       // Handle the response
+        //       if (statusCode == 200) {
+        //         await SqliteMainDbHelper.deleteRecord(
+        //             widget.pickingData.first.documentNo);
+        //         await SqliteDbHelper.deleteRecord(
+        //             widget.pickingData.first.documentNo);
 
-                widget.fetchPickingDataCallback();
+        //         widget.fetchPickingDataCallback();
 
-                // Success: Picking details updated successfully
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Picking details updated successfully.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Update Failed!'),
-                  ),
-                );
-              }
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Error: $e'),
-                ),
-              );
-            } finally {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          },
-        ),
+        //         // Success: Picking details updated successfully
+        //         ScaffoldMessenger.of(context).showSnackBar(
+        //           const SnackBar(
+        //             content: Text('Picking details updated successfully.'),
+        //             backgroundColor: Colors.green,
+        //           ),
+        //         );
+        //         Navigator.pop(context);
+        //       } else {
+        //         ScaffoldMessenger.of(context).showSnackBar(
+        //           const SnackBar(
+        //             content: Text('Update Failed!'),
+        //           ),
+        //         );
+        //       }
+        //     } catch (e) {
+        //       ScaffoldMessenger.of(context).showSnackBar(
+        //         SnackBar(
+        //           content: Text('Error: $e'),
+        //         ),
+        //       );
+        //     } finally {
+        //       setState(() {
+        //         isLoading = false;
+        //       });
+        //     }
+        //   },
+        // ),
       ),
       body: LoadingOverlay(
         isLoading: isLoading,
@@ -237,7 +237,7 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
                               .toString(),
                           pickedQty: data['quantity'].toInt().toString(),
                           binNo: data['binShelfNo'],
-                          // remarks: data['remarks'],
+                          remarks: data['remarks'],
                           option: data['option'],
                           actionButton: IconButton(
                             icon: const Icon(Icons.edit),
@@ -273,7 +273,90 @@ class _PickingDetailPageState extends State<PickingDetailPage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showConfirmationDialog(context);
+        },
+        child: const Icon(Icons.sync),
+      ),
     );
+  }
+
+  Future<void> showConfirmationDialog(BuildContext context) async {
+    final isConfirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Upload'),
+          content: const Text(
+            'Upload picking details?',
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Upload'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Check if the user confirmed or dismissed the dialog
+    if (isConfirmed == null) {
+      // Dialog was dismissed by tapping outside, do nothing
+      return;
+    } else if (isConfirmed) {
+      // Proceed with the upload logic
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        // Call the updatePickingDetail method and wait for the response
+        int statusCode =
+            await PickingService().updatePickingDetail(pickingDetailData);
+
+        // Handle the response
+        if (statusCode == 200) {
+          await SqliteMainDbHelper.deleteRecord(
+            widget.pickingData.first.documentNo,
+          );
+          await SqliteDbHelper.deleteRecord(
+            widget.pickingData.first.documentNo,
+          );
+          widget.fetchPickingDataCallback();
+
+          // Success: Picking details updated successfully
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Picking details updated successfully.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Update Failed!'),
+            ),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+          ),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   void updateLocalDatabase(
