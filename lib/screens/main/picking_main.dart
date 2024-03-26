@@ -369,6 +369,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                             option: data['option'],
                                             issueBy: data['issueBy'],
                                             salesMan: data['salesman'],
+                                            remarks: data['remarks'],
                                             onTap: () {
                                               showDialog(
                                                 context: context,

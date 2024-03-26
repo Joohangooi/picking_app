@@ -16,6 +16,7 @@ class CustomCard extends StatelessWidget {
   final String? pickedQty;
   final String? option;
   final String? issueBy;
+  final String? remarks;
   final String? salesMan;
   final VoidCallback? onTap;
   final IconButton? actionButton;
@@ -38,6 +39,7 @@ class CustomCard extends StatelessWidget {
     this.option,
     this.onTap,
     this.actionButton,
+    this.remarks,
     this.onLongPress,
     Key? key,
   }) : super(key: key);
@@ -110,6 +112,12 @@ class CustomCard extends StatelessWidget {
                                 fontSize: 17, fontWeight: FontWeight.bold)),
                       if (stockDesc != null)
                         Text(stockDesc!, style: const TextStyle(fontSize: 16)),
+                      if (remarks != null && remarks != "")
+                        Text('Remark: ${remarks!}',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.deepPurple[600])),
                     ],
                   ),
                   const Divider(),
