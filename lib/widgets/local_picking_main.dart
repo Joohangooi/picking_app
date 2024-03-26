@@ -94,6 +94,14 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
               item['salesman']
                   .toString()
                   .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['documentDate']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['option']
+                  .toString()
+                  .toLowerCase()
                   .contains(query.toLowerCase()))
           .toList();
     });

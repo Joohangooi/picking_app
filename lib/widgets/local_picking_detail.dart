@@ -69,6 +69,18 @@ class _LocalPickingState extends State<LocalPickingDetail> {
               item['salesman']
                   .toString()
                   .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['stock']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['description']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              item['option']
+                  .toString()
+                  .toLowerCase()
                   .contains(query.toLowerCase()))
           .toList();
     });

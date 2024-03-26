@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CustomCard extends StatelessWidget {
   final String? date;
@@ -44,7 +46,13 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Color backgroundColor;
     String optionText;
+    DateTime? parsedDate;
+    String formattedDate = '';
 
+    if (date != null) {
+      parsedDate = DateFormat('yyyy-MM-dd').parse(date!);
+      formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate!);
+    }
     switch (option?.toLowerCase()) {
       case 'c':
         backgroundColor = Colors.green;
@@ -112,9 +120,9 @@ class CustomCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (date != null)
-                              Text(date!, style: const TextStyle(fontSize: 15)),
-                            const SizedBox(height: 3),
+                            if (formattedDate != '')
+                              Text(formattedDate!,
+                                  style: const TextStyle(fontSize: 15)),
                             if (zone != null)
                               Text('Zone ${zone!}',
                                   style: const TextStyle(fontSize: 15)),

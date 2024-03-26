@@ -13,6 +13,7 @@ import 'package:picking_app/widgets/local_picking_main.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
 import 'package:picking_app/widgets/local_picking_detail.dart';
+import 'package:intl/intl.dart';
 
 class PickingMainPage extends StatefulWidget {
   const PickingMainPage({super.key});
@@ -302,7 +303,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                     tabs: [
                       Tab(text: 'New'),
                       Tab(text: 'Picking'),
-                      Tab(text: 'Picking List'),
+                      Tab(text: 'Details'),
                     ],
                   ),
                   Expanded(
@@ -366,83 +367,8 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                             pickedNo: data['documentNo'],
                                             companyName: data['customerName'],
                                             option: data['option'],
-                                            zone: data['zone'],
                                             issueBy: data['issueBy'],
                                             salesMan: data['salesman'],
-                                            // actionButton: IconButton(
-                                            //   icon: const Icon(
-                                            //       Icons.delete_outline),
-                                            //   onPressed: () async {
-                                            //     // Show a dialog to confirm deletion
-                                            //     showDialog(
-                                            //       context: context,
-                                            //       builder:
-                                            //           (BuildContext context) {
-                                            //         return AlertDialog(
-                                            //           title: const Text(
-                                            //               'Confirm Deletion'),
-                                            //           content: const Text(
-                                            //               'Are you sure you want to delete this record?'),
-                                            //           actions: [
-                                            //             TextButton(
-                                            //               onPressed: () {
-                                            //                 Navigator.pop(
-                                            //                     context); // Close the dialog
-                                            //               },
-                                            //               child: const Text(
-                                            //                   'Cancel'),
-                                            //             ),
-                                            //             TextButton(
-                                            //               onPressed: () async {
-                                            //                 // Delete the record
-                                            //                 try {
-                                            //                   final pickingDetail =
-                                            //                       await MainPickingService()
-                                            //                           .deletePickingDetailByDocumentNo(
-                                            //                               data[
-                                            //                                   'documentNo']);
-
-                                            //                   if (pickingDetail ==
-                                            //                       200) {
-                                            //                     ScaffoldMessenger.of(
-                                            //                             context)
-                                            //                         .showSnackBar(
-                                            //                       const SnackBar(
-                                            //                         content: Text(
-                                            //                             'Record deleted!'),
-                                            //                         backgroundColor:
-                                            //                             Colors
-                                            //                                 .green,
-                                            //                       ),
-                                            //                     );
-                                            //                     fetchPickingData();
-                                            //                   } else {
-                                            //                     ScaffoldMessenger.of(
-                                            //                             context)
-                                            //                         .showSnackBar(
-                                            //                       const SnackBar(
-                                            //                         content: Text(
-                                            //                             'Operation Failed!'),
-                                            //                         backgroundColor:
-                                            //                             Colors
-                                            //                                 .red,
-                                            //                       ),
-                                            //                     );
-                                            //                   }
-                                            //                 } finally {
-                                            //                   Navigator.pop(
-                                            //                       context); // Close the dialog
-                                            //                 }
-                                            //               },
-                                            //               child: const Text(
-                                            //                   'Confirm'),
-                                            //             ),
-                                            //           ],
-                                            //         );
-                                            //       },
-                                            //     );
-                                            //   },
-                                            // ),
                                             onTap: () {
                                               showDialog(
                                                 context: context,
