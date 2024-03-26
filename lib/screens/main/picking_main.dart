@@ -281,12 +281,39 @@ class _PickingMainPageState extends State<PickingMainPage> {
           actionButton: IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              // Implement logout functionality here
-              await jwt_service().deleteToken();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+              bool? confirmLogout = await showDialog<bool?>(
+                context: context,
+                barrierDismissible:
+                    true, // Allow dismissing the dialog by tapping outside
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Confirm Logout'),
+                    content: const Text('Are you sure you want to log out?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.of(context).pop(false),
+                      ),
+                      TextButton(
+                        child: const Text('Logout'),
+                        onPressed: () => Navigator.of(context).pop(true),
+                      ),
+                    ],
+                  );
+                },
               );
+
+              // Check if the user confirmed, canceled, or dismissed the dialog
+              if (confirmLogout == null) {
+                // Dialog was dismissed by tapping outside, do nothing
+              } else if (confirmLogout) {
+                // Implement logout functionality here
+                await jwt_service().deleteToken();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              }
             },
           ),
         ),
