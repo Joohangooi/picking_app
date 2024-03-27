@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_model.dart';
-import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_detail_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_detail.dart';
 import 'package:picking_app/services/main_picking_service.dart';
@@ -163,12 +163,12 @@ class _LocalPickingMainState extends State<LocalPickingMain> {
                           child: CustomCard(
                             pickedNo: data['documentNo'],
                             companyName: data['customerName'],
-                            zone: data['zone'],
                             date: data['documentDate'],
                             remarks: data['remarks'],
                             option: data['option'],
                             issueBy: data['issueBy'],
                             salesMan: data['salesMan'],
+                            time: data['generateTime'],
                             actionButton: IconButton(
                               icon: const Icon(Icons.delete_outline),
                               onPressed: () {

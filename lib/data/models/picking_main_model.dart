@@ -10,6 +10,7 @@ class PickingMainModel {
   String? issueBy;
   String? salesMan;
   String? option;
+  String? generateTime;
 
   PickingMainModel({
     this.documentNo,
@@ -22,6 +23,7 @@ class PickingMainModel {
     this.issueBy,
     this.salesMan,
     this.dateCompleted,
+    this.generateTime,
     this.option,
   });
 
@@ -37,6 +39,7 @@ class PickingMainModel {
       issueBy: json['issueBy'] ?? '',
       salesMan: json['salesMan'] ?? '',
       dateCompleted: DateTime.tryParse(json['dateCompleted'] ?? ''),
+      generateTime: json['generateTime'] ?? '',
       option: json['option'] ?? '',
     );
   }
@@ -52,6 +55,7 @@ class PickingMainModel {
       'zone': zone,
       'issueBy': issueBy,
       'salesMan': salesMan,
+      'generateTime': generateTime ?? '',
       'dateCompleted': dateCompleted?.toString(),
       'option': option,
     };

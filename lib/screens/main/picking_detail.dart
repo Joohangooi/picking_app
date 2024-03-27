@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_model.dart';
-import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_detail_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/main/picking_edit.dart';
 import 'package:picking_app/widgets/app_bar_widget.dart';

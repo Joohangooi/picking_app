@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picking_app/data/models/picking_main_model.dart';
 import 'package:picking_app/data/models/picking_model.dart';
-import 'package:picking_app/data/sqlite_db_helper.dart';
+import 'package:picking_app/data/sqlite_detail_db_helper.dart';
 import 'package:picking_app/data/sqlite_main_db_helper.dart';
 import 'package:picking_app/screens/auth/sign_in_page.dart';
 import 'package:picking_app/services/jwt_service.dart';

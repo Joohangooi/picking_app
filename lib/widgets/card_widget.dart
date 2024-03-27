@@ -80,16 +80,26 @@ class CustomCard extends StatelessWidget {
     }
 
     String _formatTime(String time) {
-      // Trim any leading or trailing whitespace
-      String trimmedTime = time.trim();
+      try {
+        // Trim any leading or trailing whitespace
+        String trimmedTime = time.trim();
 
-      // Parse the time string
-      DateTime parsedTime = DateFormat('HH:mm').parse(trimmedTime);
+        // Ensure the time string is not empty
+        if (trimmedTime.isEmpty) {
+          return ''; // Return empty string if time string is empty
+        }
 
-      // Format the time into 12-hour format with AM/PM
-      String formattedTime = DateFormat('h:mm a').format(parsedTime);
+        // Parse the time string
+        DateTime parsedTime = DateFormat('HH:mm').parse(trimmedTime);
 
-      return formattedTime;
+        // Format the time into 12-hour format with AM/PM
+        String formattedTime = DateFormat('h:mm a').format(parsedTime);
+
+        return formattedTime;
+      } catch (e) {
+        print('Error formatting time: $e');
+        return ''; // Return empty string if there's an error parsing/formatting the time
+      }
     }
 
     return GestureDetector(

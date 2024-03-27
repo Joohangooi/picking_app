@@ -30,7 +30,8 @@ class SqliteMainDbHelper {
             dateCompleted TEXT,
             salesMan TEXT,
             issueBy TEXT,
-            option TEXT
+            option TEXT,
+            generateTime TEXT
           )
         ''');
       },
@@ -74,7 +75,6 @@ class SqliteMainDbHelper {
         return false;
       }
     } catch (e) {
-      print('Error deleting record: $e');
       return false;
     }
   }
@@ -93,6 +93,7 @@ class SqliteMainDbHelper {
             ? null
             : DateTime.tryParse(maps[i]['issueDate']),
         remarks: maps[i]['remarks'] ?? '',
+        generateTime: maps[i]['generateTime'] ?? '',
         customerName: maps[i]['customerName'] ?? '',
         pickBy: maps[i]['pickBy'] ?? '',
         issueBy: maps[i]['issueBy'] ?? '',
@@ -121,6 +122,7 @@ class SqliteMainDbHelper {
         documentDate: DateTime.tryParse(maps[i]['documentDate']),
         issueDate: DateTime.tryParse(maps[i]['issueDate']),
         remarks: maps[i]['remarks'],
+        generateTime: maps[i]['generateTime'],
         customerName: maps[i]['customerName'],
         pickBy: maps[i]['pickBy'],
         zone: maps[i]['zone'],
