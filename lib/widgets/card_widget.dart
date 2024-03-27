@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,6 +17,7 @@ class CustomCard extends StatelessWidget {
   final String? issueBy;
   final String? remarks;
   final String? salesMan;
+  final String? time;
   final VoidCallback? onTap;
   final IconButton? actionButton;
   final ValueChanged<String>? onLongPress;
@@ -38,6 +38,7 @@ class CustomCard extends StatelessWidget {
     this.salesMan,
     this.option,
     this.onTap,
+    this.time,
     this.actionButton,
     this.remarks,
     this.onLongPress,
@@ -76,6 +77,19 @@ class CustomCard extends StatelessWidget {
         backgroundColor = Colors.transparent;
         optionText = '';
         break;
+    }
+
+    String _formatTime(String time) {
+      // Trim any leading or trailing whitespace
+      String trimmedTime = time.trim();
+
+      // Parse the time string
+      DateTime parsedTime = DateFormat('HH:mm').parse(trimmedTime);
+
+      // Format the time into 12-hour format with AM/PM
+      String formattedTime = DateFormat('h:mm a').format(parsedTime);
+
+      return formattedTime;
     }
 
     return GestureDetector(
@@ -128,9 +142,25 @@ class CustomCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (formattedDate != '')
-                              Text(formattedDate!,
-                                  style: const TextStyle(fontSize: 15)),
+                            if (formattedDate != '' || time != null)
+                              Row(
+                                children: [
+                                  if (formattedDate != '')
+                                    Text(
+                                      formattedDate!,
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  if (formattedDate != '' && time != null)
+                                    const SizedBox(width: 8),
+                                  if (time != null)
+                                    Text(
+                                      _formatTime(time!),
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             if (zone != null)
                               Text('Zone ${zone!}',
                                   style: const TextStyle(fontSize: 15)),

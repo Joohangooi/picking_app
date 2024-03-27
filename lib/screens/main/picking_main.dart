@@ -13,7 +13,6 @@ import 'package:picking_app/widgets/local_picking_main.dart';
 import 'package:picking_app/widgets/search_bar_widget.dart';
 import 'package:picking_app/services/main_picking_service.dart';
 import 'package:picking_app/widgets/local_picking_detail.dart';
-import 'package:intl/intl.dart';
 
 class PickingMainPage extends StatefulWidget {
   const PickingMainPage({super.key});
@@ -397,6 +396,7 @@ class _PickingMainPageState extends State<PickingMainPage> {
                                             issueBy: data['issueBy'],
                                             salesMan: data['salesman'],
                                             remarks: data['remarks'],
+                                            time: data['generateTime'],
                                             onTap: () {
                                               showDialog(
                                                 context: context,
